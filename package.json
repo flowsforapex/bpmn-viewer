@@ -1,0 +1,29 @@
+{
+  "name": "bpmn-viewer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "npx serve dist",
+    "build": "webpack --mode production"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mt-ag/bpmn-viewer.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mt-ag/bpmn-viewer/issues"
+  },
+  "homepage": "https://github.com/mt-ag/bpmn-viewer#readme",
+  "dependencies": {
+    "bpmn-js": "^7.2.1",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.12"
+  },
+  "devDependencies": {
+    "copy-webpack-plugin": "^6.0.3"
+  }
+}
