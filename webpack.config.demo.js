@@ -3,10 +3,10 @@ const path = require("path");
 
 module.exports = {
   entry: {
-    bundle: [__dirname + "/index.js"],
+    bundle: [path.resolve(__dirname, "demo.js")],
   },
   output: {
-    path: __dirname + "/dist",
+    path: path.resolve(__dirname, "demo"),
     filename: "bundle.js",
   },
   plugins: [
