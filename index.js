@@ -1,3 +1,9 @@
-import BpmnJS from "bpmn-js";
+import BpmnJS from "bpmn-js/lib/NavigatedViewer";
+import spViewModule from "./lib/spViewModule";
 
-export default BpmnJS;
+bpmnViewer = {
+  BpmnJS,
+  customModules: { spViewModule }
+}
+
+export default bpmnViewer;

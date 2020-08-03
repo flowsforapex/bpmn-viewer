@@ -1,9 +1,11 @@
-import BpmnJS from "bpmn-js";
+import BpmnJS from "bpmn-js/lib/NavigatedViewer";
+import spViewModule from "./lib/spViewModule/index"
 
 async function init() {
   // viewer instance
   var bpmnViewer = new BpmnJS({
     container: "#canvas",
+    additionalModules: [ spViewModule ]
   });
 
   async function openDiagram(bpmnXML) {
