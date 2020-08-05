@@ -1,15 +1,19 @@
 const path = require("path");
 
-module.exports = {
+module.exports = { 
   entry: {
-    bundle: [path.resolve(__dirname, "index.js")],
+    "mtag.bpmnviewer": [path.resolve(__dirname, "index.js")],
   },
   output: {
     path: path.resolve(__dirname, "dist"),
-    filename: "bundle.js",
+    filename: '[name].js',
     library: "bpmnViewer",
     libraryTarget: "var",
-    libraryExport: "default"
+    libraryExport: "default",
+  },
+  optimization: {
+    minimize: false
   },
   devtool: "source-map",
-};
+}
+;
