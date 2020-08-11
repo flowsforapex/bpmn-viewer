@@ -4,6 +4,6 @@ import spViewModule from "./lib/spViewModule";
 bpmnViewer = {
   BpmnJS,
   customModules: { spViewModule }
-}
+};
 
 export default bpmnViewer;
