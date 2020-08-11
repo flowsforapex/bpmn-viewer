@@ -25,7 +25,7 @@ async function init() {
   }
 
   var client = new XMLHttpRequest();
-  client.open("GET", "/diagram.txt");
+  client.open("GET", "/shipment_processes.txt");
   client.onreadystatechange = function () {
     openDiagram(client.responseText);
   };

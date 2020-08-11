@@ -18,6 +18,9 @@ module.exports = {
         {
           from: path.resolve(__dirname, "diagram.txt"),
         },
+        {
+          from: path.resolve(__dirname, "shipment_processes.txt"),
+        },
       ],
     }),
   ],
