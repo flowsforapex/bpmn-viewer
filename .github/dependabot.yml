@@ -9,5 +9,5 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
-allow:
-  - dependency-name: "bpmn-js"
+    allow:
+      - dependency-name: "bpmn-js"
