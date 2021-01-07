@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/mt-ag/bpmn-viewer#readme",
   "dependencies": {
-    "bpmn-js": "^7.2.1"
+    "bpmn-js": "^8.0.0"
   },
   "devDependencies": {
     "copy-webpack-plugin": "^6.0.3",
