@@ -2,7 +2,7 @@
 
 ## Description
 
-BPMN Viewer with customised Properties Panel
+BPMN Viewer, that is used in Apex BPMN Viwer plugin.
 
 ## Run the app
 
