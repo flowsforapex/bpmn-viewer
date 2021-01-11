@@ -9,7 +9,8 @@
     "build-dist": "npm-run-all build-prod build-dev",
     "build-dev": "webpack --mode development --config webpack.config.dev.js",
     "build-prod": "webpack --mode production --config webpack.config.prod.js",
-    "build-demo": "webpack --mode production --config webpack.config.demo.js"
+    "build-demo": "webpack --mode production --config webpack.config.demo.js",
+    "update-packages": "npx remove-node-modules && npm i"
   },
   "repository": {
     "type": "git",
