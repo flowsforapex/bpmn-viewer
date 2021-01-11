@@ -2,7 +2,7 @@
 
 ## Description
 
-BPMN Viewer, that is used in Apex BPMN Viwer plugin.
+BPMN Viewer, that is used in Apex BPMN Viewer plugin.
 
 ## Run the app
 
