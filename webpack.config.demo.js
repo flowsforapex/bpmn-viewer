@@ -2,6 +2,7 @@ const CopyPlugin = require("copy-webpack-plugin");
 const path = require("path");
 
 module.exports = {
+  mode: "production",
   entry: {
     bundle: [path.resolve(__dirname, "demo.js")],
   },
@@ -25,4 +26,8 @@ module.exports = {
     }),
   ],
   devtool: "source-map",
+  devServer: {
+    compress: true,
+    port: 8082
+  },
 };

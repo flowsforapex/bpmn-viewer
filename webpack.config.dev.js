@@ -1,11 +1,8 @@
 const path = require("path");
 
 module.exports = { 
-  entry: {
-    "mtag.bpmnviewer": [path.resolve(__dirname, "index.js")],
-  },
+  mode: "development",
   output: {
-    path: path.resolve(__dirname, "dist"),
     filename: '[name].js',
     library: "bpmnViewer",
     libraryTarget: "var",

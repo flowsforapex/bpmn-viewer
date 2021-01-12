@@ -1,15 +1,18 @@
 {
   "name": "bpmn-viewer",
   "version": "1.0.0",
-  "description": "",
+  "description": "BPMN Viewer",
   "main": "index.js",
   "scripts": {
-    "start": "npx serve demo",
+    "start": "npm run dev-demo",
+    "debug-webpack": "node --trace-deprecation node_modules/webpack/bin/webpack.js",
+    "dev-demo": "webpack-dev-server --mode development --config webpack.config.demo.js",
+    "dev-demo-prod": "webpack-dev-server --mode production --config webpack.config.demo.js",
     "build-all": "npm-run-all build-dist build-demo",
     "build-dist": "npm-run-all build-prod build-dev",
-    "build-dev": "webpack --mode development --config webpack.config.dev.js",
-    "build-prod": "webpack --mode production --config webpack.config.prod.js",
-    "build-demo": "webpack --mode production --config webpack.config.demo.js",
+    "build-dev": "webpack --config webpack.config.dev.js",
+    "build-prod": "webpack --config webpack.config.prod.js",
+    "build-demo": "webpack --config webpack.config.demo.js",
     "update-packages": "npx remove-node-modules && npm i"
   },
   "repository": {
@@ -29,7 +32,8 @@
   "devDependencies": {
     "copy-webpack-plugin": "^6.0.3",
     "npm-run-all": "^4.1.5",
-    "webpack": "^4.43.0",
-    "webpack-cli": "^3.3.12"
+    "webpack": "5.13.0",
+    "webpack-cli": "4.3.1",
+    "webpack-dev-server": "4.0.0-beta.0"
   }
 }
