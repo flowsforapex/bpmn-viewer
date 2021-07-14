@@ -45,9 +45,32 @@
     var myBpmnViewer = new bpmnViewer.NavigatedViewer({
       container: "#canvas",
       additionalModules: [
-        bpmnViewer.customModules.spViewModule
+        bpmnViewer.customModules.spViewModule,
+        bpmnViewer.customModules.SVGModule
       ],
     });
+
+    async function saveSVG() {
+      try {
+        const result = await myBpmnViewer.saveSVG({ format: true });
+        const { svg } = result;
+
+        var styledSVG = myBpmnViewer.get('SVGModule').addStyles(svg, '');
+
+        var svgBlob = new Blob([styledSVG], {
+            type: 'image/svg+xml'
+        });
+        var fileName = Math.random(36).toString().substring(7) + '.svg';
+
+        var downloadLink = document.createElement('a');
+        downloadLink.download = fileName;
+        downloadLink.href = window.URL.createObjectURL(svgBlob);
+        downloadLink.click();
+
+      } catch (err) {
+        console.log(err);
+      }
+    }
 
     async function init() {
     // viewer instance
@@ -79,5 +102,6 @@
 
   init();
   </script>
+  <button onclick="saveSVG()">SVG</button>
 </body>
 </html>
