@@ -3,17 +3,21 @@ const path = require("path");
 
 module.exports = {
   entry: {
-    bundle: [path.resolve(__dirname, "demo.js")],
+    bundle: [path.resolve(__dirname, "index.js")],
   },
   output: {
     path: path.resolve(__dirname, "demo"),
     filename: "bundle.js",
+    library: "bpmnViewer",
+    libraryTarget: "var",
+    libraryExport: "default"
   },
   plugins: [
     new CopyPlugin({
       patterns: [
         {
-          from: path.resolve(__dirname, "index.html"),
+          from: path.resolve(__dirname, "demo.html"),
+          to: "./index.html",
         },
         {
           from: path.resolve(__dirname, "diagram.txt"),
@@ -25,4 +29,9 @@ module.exports = {
     }),
   ],
   devtool: "source-map",
+  devServer: {
+    contentBase: path.join(__dirname, "demo"),
+    compress: true,
+    port: 8084,
+  },
 };
