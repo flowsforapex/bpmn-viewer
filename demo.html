@@ -46,7 +46,7 @@
       container: "#canvas",
       additionalModules: [
         bpmnViewer.customModules.spViewModule,
-        bpmnViewer.customModules.SVGModule
+        bpmnViewer.customModules.styleModule
       ],
     });
 
@@ -55,9 +55,7 @@
         const result = await myBpmnViewer.saveSVG({ format: true });
         const { svg } = result;
 
-        var styledSVG = myBpmnViewer.get('SVGModule').addStyles(svg, '');
-
-        var svgBlob = new Blob([styledSVG], {
+        var svgBlob = new Blob([svg], {
             type: 'image/svg+xml'
         });
         var fileName = Math.random(36).toString().substring(7) + '.svg';
@@ -83,6 +81,8 @@
         // access viewer components
         var canvas = myBpmnViewer.get("canvas");
         var overlays = myBpmnViewer.get("overlays");
+
+        myBpmnViewer.get('styleModule').addStylesToElements(['Activity_02e6p2j'], {'fill':'green'});
 
         // zoom to fit full viewport
         canvas.zoom("fit-viewport");
