@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8" />
-  <title>Custom BPMN-Viewer!</title>
+  <title>BPMN Viewer</title>
 
   <!-- viewer distro (with pan and zoom) -->
 
@@ -35,6 +35,16 @@
       stroke: rgba(66, 180, 21, 0.7) !important;
       /* color elements as red */
     }
+
+    .addText {
+      width: 140px;
+      height: 120px;
+      background-color: white;
+      opacity: 0.9;
+      border: 2px solid black;
+      border-radius: 10px;
+    }
+
   </style>
 </head>
 
@@ -46,7 +56,8 @@
       container: "#canvas",
       additionalModules: [
         bpmnViewer.customModules.spViewModule,
-        bpmnViewer.customModules.styleModule
+        bpmnViewer.customModules.styleModule,
+        bpmnViewer.customModules.hoverModule
       ],
     });
 
@@ -84,6 +95,12 @@
 
         myBpmnViewer.get('styleModule').addStylesToElements(['Activity_02e6p2j'], {'fill':'green'});
 
+        myBpmnViewer.get('hoverModule').addOverlays({
+          'Activity_02e6p2j': 'Additional text',
+          'Activity_1bzg6td': 'Another additional text',
+          'Activity_0icl811': 'A text that might be too long to display correctly.'
+        });
+
         // zoom to fit full viewport
         canvas.zoom("fit-viewport");
       } catch (err) {
@@ -94,7 +111,9 @@
     var client = new XMLHttpRequest();
     client.open("GET", "/shipment_processes.txt");
     client.onreadystatechange = function () {
-      openDiagram(client.responseText);
+      if (this.readyState == 4 && this.status == 200) {
+        openDiagram(client.responseText);
+      }
     };
 
     client.send();
