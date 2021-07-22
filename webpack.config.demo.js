@@ -25,6 +25,9 @@ module.exports = {
         {
           from: path.resolve(__dirname, "shipment_processes.txt"),
         },
+        {
+          from: path.resolve(__dirname, "ProcessVariables.xml"),
+        },
       ],
     }),
   ],

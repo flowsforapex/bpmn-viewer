@@ -36,13 +36,35 @@
       /* color elements as red */
     }
 
-    .addText {
+    .addText_onTop {
       width: 140px;
       height: 120px;
       background-color: white;
       opacity: 0.9;
       border: 2px solid black;
       border-radius: 10px;
+    }
+
+    .addText_above {
+      width: 140px;
+      height: 120px;
+      background-color: white;
+      border: 2px solid grey;
+      border-radius: 10px;
+    }
+
+    .addText_above:after {
+      content: '';
+      position: absolute;
+      display: block;
+      width: 0;
+      z-index: 1;
+      border-style: solid;
+      border-color: grey transparent;
+      border-width: 10px 10px 0;
+      bottom: -10px;
+      left: 50%;
+      margin-left: -10px;
     }
 
   </style>
@@ -93,12 +115,23 @@
         var canvas = myBpmnViewer.get("canvas");
         var overlays = myBpmnViewer.get("overlays");
 
-        myBpmnViewer.get('styleModule').addStylesToElements(['Activity_02e6p2j'], {'fill':'green'});
+        /* shipment_processes.txt */
+
+        // myBpmnViewer.get('styleModule').addStylesToElements(['Activity_02e6p2j'], {'fill':'green'});
+
+        // myBpmnViewer.get('hoverModule').addOverlays({
+        //   'Activity_02e6p2j': 'Additional text',
+        //   'Activity_1bzg6td': 'Another additional text',
+        //   'Activity_0icl811': 'A text that might be too long to display correctly.'
+        // });
+
+        /* ProcessVariables.xml */
 
         myBpmnViewer.get('hoverModule').addOverlays({
-          'Activity_02e6p2j': 'Additional text',
-          'Activity_1bzg6td': 'Another additional text',
-          'Activity_0icl811': 'A text that might be too long to display correctly.'
+          'Activity_1xe8rw7': 'Additional text',
+          'Activity_16eq0t2': 'Another additional text',
+          'Activity_0tlresp': 'A really long additional text that might interfere with other elements',
+          'Activity_1vxq5r8': 'Text'
         });
 
         // zoom to fit full viewport
@@ -109,7 +142,7 @@
     }
 
     var client = new XMLHttpRequest();
-    client.open("GET", "/shipment_processes.txt");
+    client.open("GET", "/ProcessVariables.xml");
     client.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200) {
         openDiagram(client.responseText);
