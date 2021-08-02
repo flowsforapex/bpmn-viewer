@@ -1,0 +1,36 @@
+{
+    "extends": ["webpack", "eslint:recommended"],
+    "parserOptions": {
+        "ecmaVersion": 2018
+    },
+    "rules": {
+        "array-bracket-spacing": "warn",
+        "comma-dangle": "off",
+        "eol-last": "off",
+        "func-names": "off",
+        "import/extensions": "off",
+        "import/first": "off",
+        "import/no-mutable-exports": "off",
+        "import/order": "off",
+        "import/prefer-default-export": "off",
+        "indent": "off",
+        "key-spacing": ["warn", { "beforeColon": false }],
+        "linebreak-style": "off",
+        "no-console": 1,
+        "no-shadow": "off",
+        "no-trailing-spaces": "off",
+        "no-undef": "off",
+        "no-underscore-dangle": "off",
+        "no-unused-vars": "off",
+        "no-var": "off",
+        "object-curly-spacing": "off",
+        "object-shorthand": "off",
+        "padded-blocks": "off",
+        "prefer-arrow-callback": "off",
+        "space-before-function-paren": "warn",
+        "space-in-parens": ["error", "always"],
+        "quote-props": "off",
+        "quotes": ["warn", "single"],
+        "vars-on-top": ["warn"]
+    }
+}
