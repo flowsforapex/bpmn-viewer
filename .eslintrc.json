@@ -16,7 +16,6 @@
         "indent": "off",
         "key-spacing": ["warn", { "beforeColon": false }],
         "linebreak-style": "off",
-        "no-console": 1,
         "no-shadow": "off",
         "no-trailing-spaces": "off",
         "no-undef": "off",
@@ -28,7 +27,6 @@
         "padded-blocks": "off",
         "prefer-arrow-callback": "off",
         "space-before-function-paren": "warn",
-        "space-in-parens": ["error", "always"],
         "quote-props": "off",
         "quotes": ["warn", "single"],
         "vars-on-top": ["warn"]
