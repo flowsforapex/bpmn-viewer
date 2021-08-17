@@ -8,6 +8,7 @@
         "comma-dangle": "off",
         "eol-last": "off",
         "func-names": "off",
+        "guard-for-in": "off",
         "import/extensions": "off",
         "import/first": "off",
         "import/no-mutable-exports": "off",

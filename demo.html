@@ -4,6 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>Flows for APEX - Viewer</title>
+  <link type="text/css" rel="stylesheet" href=" https://static.oracle.com/cdn/apex/21.1.0/libraries/font-apex/2.1/css/font-apex.min.css">
 
   <style type="text/css">
     html,
@@ -28,6 +29,42 @@
 
     .needs-discussion:not(.djs-connection) .djs-visual> :nth-child(1) {
       stroke: rgba(66, 180, 21, 0.7) !important;
+    }
+    
+    .instance_counter {
+      height: 30px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 20px;
+    }
+
+    .counter_icon {
+      padding-left: 5px;
+      padding-right: 5px;
+    }
+
+    .running {
+      color: green;
+    }
+    .error {
+      color: red;
+    }
+
+    .heatmap_area.running, .heatmap_area.error {
+      width: 100px;
+      height: 40px;
+      border-radius: 10px;
+    }
+
+    .heatmap_area.running {
+      box-shadow: 0px -10px 10px -10px green, 
+        -10px 0px 10px -10px green, 10px 0px 10px -10px green;
+    }
+
+    .heatmap_area.error {
+      box-shadow: 0px 10px 10px -10px red, 
+        -10px 0px 10px -10px red, 10px 0px 10px -10px red;
     }
   </style>
 </head>
@@ -76,7 +113,10 @@
         var canvas = myBpmnViewer.get("canvas");
         var overlays = myBpmnViewer.get("overlays");
 
-        myBpmnViewer.get('styleModule').addStylesToElements(['Activity_02e6p2j'], {'fill':'green'});
+        // myBpmnViewer.get('styleModule').addStylesToElements(['Activity_02e6p2j'], {'fill':'green'});
+
+        myBpmnViewer.get('styleModule').showRunningInstanceCounters({'Activity_02e6p2j':'2', 'Activity_0icl811':'1', 'Activity_0kx4g7c':'3'}, false);
+        myBpmnViewer.get('styleModule').showErrorInstanceCounters({'Activity_02e6p2j':'1', 'Activity_0icl811':'0', 'Activity_0kx4g7c':'0'}, false);
 
         // zoom to fit full viewport
         canvas.zoom("fit-viewport");
