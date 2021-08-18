@@ -10,7 +10,7 @@ module.exports = {
     filename: "bundle.js",
     library: "bpmnViewer",
     libraryTarget: "var",
-    libraryExport: "default"
+    libraryExport: "default",
   },
   plugins: [
     new CopyPlugin({
@@ -24,6 +24,12 @@ module.exports = {
         },
         {
           from: path.resolve(__dirname, "shipment_processes.txt"),
+        },
+        {
+          from: path.resolve(__dirname, "test1.bpmn"),
+        },
+        {
+          from: path.resolve(__dirname, "test2.bpmn"),
         },
       ],
     }),

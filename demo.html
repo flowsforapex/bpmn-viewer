@@ -6,77 +6,62 @@
   <title>Flows for APEX - Viewer</title>
 
   <style type="text/css">
-    html,
-    body,
-    #canvas {
+    html, body {
       height: 100%;
       padding: 0;
       margin: 0;
     }
 
-    .diagram-note {
-      background-color: rgba(66, 180, 21, 0.7);
-      color: White;
-      border-radius: 5px;
-      font-family: Arial;
-      font-size: 12px;
-      padding: 5px;
-      min-height: 16px;
-      width: 50px;
-      text-align: center;
+    #container {
+      height: 100%;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      width: 100vw;
+      flex-direction: row;
     }
 
-    .needs-discussion:not(.djs-connection) .djs-visual> :nth-child(1) {
-      stroke: rgba(66, 180, 21, 0.7) !important;
+    #canvas_left, #canvas_right {
+      height: 100%;
+      padding: 0;
+      margin: 0;
+      width: 50vw;
     }
   </style>
 </head>
 
 <body>
-  <div id="canvas"></div>
+  <div id="container">
+    <div id="canvas_left"></div>
+    <div id="canvas_right"></div>
+  </div>
   <script src="./bundle.js"></script>
   <script>
-    var myBpmnViewer = new bpmnViewer.NavigatedViewer({
-      container: "#canvas",
+
+    var myBpmnViewer_left = new bpmnViewer.NavigatedViewer({
+      container: "#canvas_left",
       additionalModules: [
         bpmnViewer.customModules.spViewModule,
         bpmnViewer.customModules.styleModule
       ],
     });
 
-    async function saveSVG() {
-      try {
-        const result = await myBpmnViewer.saveSVG({ format: true });
-        const { svg } = result;
+    var myBpmnViewer_right = new bpmnViewer.NavigatedViewer({
+      container: "#canvas_right",
+      additionalModules: [
+        bpmnViewer.customModules.spViewModule,
+        bpmnViewer.customModules.styleModule
+      ],
+    });
 
-        var svgBlob = new Blob([svg], {
-            type: 'image/svg+xml'
-        });
-        var fileName = Math.random(36).toString().substring(7) + '.svg';
-
-        var downloadLink = document.createElement('a');
-        downloadLink.download = fileName;
-        downloadLink.href = window.URL.createObjectURL(svgBlob);
-        downloadLink.click();
-
-      } catch (err) {
-        console.log(err);
-      }
-    }
-
-    async function init() {
-    // viewer instance
-
-    async function openDiagram(bpmnXML) {
+    async function openDiagram(viewer, bpmnXML) {
       // import diagram
       try {
-        await myBpmnViewer.importXML(bpmnXML);
+        await viewer.importXML(bpmnXML);
 
         // access viewer components
-        var canvas = myBpmnViewer.get("canvas");
-        var overlays = myBpmnViewer.get("overlays");
-
-        myBpmnViewer.get('styleModule').addStylesToElements(['Activity_02e6p2j'], {'fill':'green'});
+        var canvas = viewer.get("canvas");
+        var overlays = viewer.get("overlays");
 
         // zoom to fit full viewport
         canvas.zoom("fit-viewport");
@@ -85,17 +70,22 @@
       }
     }
 
-    var client = new XMLHttpRequest();
-    client.open("GET", "/shipment_processes.txt");
-    client.onreadystatechange = function () {
-      openDiagram(client.responseText);
-    };
+    Promise.all([
+      fetch('test1.bpmn'),
+      fetch('test2.bpmn')
+    ]).then((responses) => {
+      return Promise.all(responses.map(function (response) {
+        return response.text();
+      }));
+    }).then((text) => {
+        var flow_left = text[0];
+        openDiagram(myBpmnViewer_left, flow_left);
+        var flow_right = text[1];
+        openDiagram(myBpmnViewer_right, flow_right);
 
-    client.send();
-  }
+        bpmnViewer.diffModels(flow_left, flow_right);
+    });
 
-  init();
   </script>
-  <button onclick="saveSVG()">SVG</button>
 </body>
 </html>

@@ -1,5 +1,6 @@
 import BpmnJSNavigated from 'bpmn-js/lib/NavigatedViewer';
 import BpmnJS from 'bpmn-js/lib/Viewer';
+import diffModels from './lib/diffModule';
 import spViewModule from './lib/spViewModule';
 import styleModule from './lib/styleModule';
 
@@ -10,6 +11,7 @@ var bpmnViewer = {
     spViewModule,
     styleModule,
   },
+  diffModels,
 };
 
 export default bpmnViewer;
