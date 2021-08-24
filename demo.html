@@ -14,20 +14,19 @@
       margin: 0;
     }
 
-    .diagram-note {
-      background-color: rgba(66, 180, 21, 0.7);
-      color: White;
-      border-radius: 5px;
-      font-family: Arial;
-      font-size: 12px;
-      padding: 5px;
-      min-height: 16px;
-      width: 50px;
-      text-align: center;
+    .bjs-container {
+      --default-fill-color: white;
+      --default-stroke-color: black;
     }
 
-    .needs-discussion:not(.djs-connection) .djs-visual> :nth-child(1) {
-      stroke: rgba(66, 180, 21, 0.7) !important;
+    /**
+     * custom dark mode colors
+     */
+    @media (prefers-color-scheme: dark) {
+      .bjs-container {
+        --default-fill-color: #2b3035;
+        --default-stroke-color: white;
+      }
     }
   </style>
 </head>
@@ -42,6 +41,11 @@
         bpmnViewer.customModules.spViewModule,
         bpmnViewer.customModules.styleModule
       ],
+      bpmnRenderer: {
+        defaultFillColor: "var(--default-fill-color)",
+        defaultStrokeColor: "var(--default-stroke-color)",
+        defaultLabelColor: "var(--default-stroke-color)",
+      }
     });
 
     async function saveSVG() {
