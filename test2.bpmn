@@ -4,12 +4,12 @@
     <bpmn:startEvent id='Event_1aqqvgg'>
       <bpmn:outgoing>Flow_1eyrayp</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:task id='Activity_04ocyhb' name='A'>
+    <bpmn:scriptTask id='Activity_04ocyha' name='E'>
       <bpmn:incoming>Flow_1eyrayp</bpmn:incoming>
       <bpmn:outgoing>Flow_0vt95yf</bpmn:outgoing>
-    </bpmn:task>
-    <bpmn:sequenceFlow id='Flow_1eyrayp' sourceRef='Event_1aqqvgg' targetRef='Activity_04ocyhb' />
-    <bpmn:sequenceFlow id='Flow_0vt95yf' sourceRef='Activity_04ocyhb' targetRef='Activity_1c7a5bd' />
+    </bpmn:scriptTask>
+    <bpmn:sequenceFlow id='Flow_1eyrayp' sourceRef='Event_1aqqvgg' targetRef='Activity_04ocyha' />
+    <bpmn:sequenceFlow id='Flow_0vt95yf' sourceRef='Activity_04ocyha' targetRef='Activity_1c7a5bd' />
     <bpmn:scriptTask id='Activity_1c7a5bd' name='B'>
       <bpmn:incoming>Flow_0vt95yf</bpmn:incoming>
       <bpmn:outgoing>Flow_1sv47nm</bpmn:outgoing>
@@ -46,7 +46,7 @@
       <bpmndi:BPMNShape id='Event_1aqqvgg_di' bpmnElement='Event_1aqqvgg'>
         <dc:Bounds x='482' y='302' width='36' height='36' />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id='Activity_04ocyhb_di' bpmnElement='Activity_04ocyhb'>
+      <bpmndi:BPMNShape id='Activity_04ocyhb_di' bpmnElement='Activity_04ocyha'>
         <dc:Bounds x='570' y='280' width='100' height='80' />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id='Activity_0nj1kbp_di' bpmnElement='Activity_1c7a5bd'>
