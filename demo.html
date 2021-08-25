@@ -53,7 +53,9 @@
         const result = await myBpmnViewer.saveSVG({ format: true });
         const { svg } = result;
 
-        var svgBlob = new Blob([svg], {
+        const styledSVG = myBpmnViewer.get('styleModule').addToSVGStyle(svg,'.djs-group { --default-fill-color: white; --default-stroke-color: black; }');
+
+        var svgBlob = new Blob([styledSVG], {
             type: 'image/svg+xml'
         });
         var fileName = Math.random(36).toString().substring(7) + '.svg';
