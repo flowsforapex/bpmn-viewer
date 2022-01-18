@@ -2,6 +2,7 @@ const CopyPlugin = require("copy-webpack-plugin");
 const path = require("path");
 
 module.exports = {
+  mode: "production",
   entry: {
     bundle: [path.resolve(__dirname, "index.js")],
   },
@@ -10,7 +11,7 @@ module.exports = {
     filename: "bundle.js",
     library: "bpmnViewer",
     libraryTarget: "var",
-    libraryExport: "default"
+    libraryExport: "default",
   },
   plugins: [
     new CopyPlugin({
@@ -30,7 +31,6 @@ module.exports = {
   ],
   devtool: "source-map",
   devServer: {
-    contentBase: path.join(__dirname, "demo"),
     compress: true,
     port: 8084,
   },

@@ -1,6 +1,7 @@
 const path = require("path");
 
 module.exports = {
+  mode: "production",
   entry: {
     "flows4apex.viewer": [path.resolve(__dirname, "index.js")],
   },
