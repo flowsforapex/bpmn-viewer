@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="/assets/bpmn-js/diagram-js.css" type="text/css"/>
   <link rel="stylesheet" href="/assets/bpmn-js/bpmn-js.css" type="text/css"/>
   <link rel="stylesheet" href="/assets/bpmn-js/bpmn-font/css/bpmn-embedded.css" type="text/css"/>
+  <link type="text/css" rel="stylesheet" href=" https://static.oracle.com/cdn/apex/21.1.0/libraries/font-apex/2.1/css/font-apex.min.css">
 </head>
 
 <body>
@@ -24,7 +25,8 @@
         bpmnViewer.customModules.ZoomScrollModule,
         bpmnViewer.customModules.drilldownCentering,
         bpmnViewer.customModules.callActivityModule,
-        bpmnViewer.customModules.styleModule
+        bpmnViewer.customModules.styleModule,
+        bpmnViewer.customModules.customPaletteProviderModule
       ],
       bpmnRenderer: {
         defaultFillColor: "var(--default-fill-color)",
