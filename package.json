@@ -25,7 +25,7 @@
   },
   "homepage": "https://github.com/mt-ag/bpmn-viewer#readme",
   "dependencies": {
-    "bpmn-js": "^8.9.1"
+    "bpmn-js": "^11.1.1"
   },
   "devDependencies": {
     "copy-webpack-plugin": "^6.4.1",
