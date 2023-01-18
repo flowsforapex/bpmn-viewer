@@ -5,6 +5,10 @@
   <meta charset="UTF-8" />
   <title>Flows for APEX - Viewer</title>
 
+  <link rel="stylesheet" href="/assets/bpmn-js/diagram-js.css" type="text/css"/>
+  <link rel="stylesheet" href="/assets/bpmn-js/bpmn-js.css" type="text/css"/>
+  <link rel="stylesheet" href="/assets/bpmn-js/bpmn-font/css/bpmn-embedded.css" type="text/css"/>
+
   <style type="text/css">
     html,
     body,
@@ -62,22 +66,22 @@
 </head>
 
 <body>
-  <div id="breadcrumb">Load diagram</div>
+  <div id="breadcrumb">Breadcrumb</div>
   <div id="canvas" class="flows4apex-viewer FLOWS"></div>
   <script src="./bundle.js"></script>
   <script>
-    var myBpmnViewer = new bpmnViewer.NavigatedViewer({
+    var myBpmnViewer = new bpmnViewer.Viewer({
       container: "#canvas",
-      additionalModules: [
-        bpmnViewer.customModules.spViewModule,
-        bpmnViewer.customModules.styleModule,
-        bpmnViewer.customModules.subProcessModule
-      ],
-      bpmnRenderer: {
-        defaultFillColor: "var(--default-fill-color)",
-        defaultStrokeColor: "var(--default-stroke-color)",
-        defaultLabelColor: "var(--default-stroke-color)",
-      }
+      // additionalModules: [
+      //   bpmnViewer.customModules.spViewModule,
+      //   bpmnViewer.customModules.styleModule,
+      //   bpmnViewer.customModules.subProcessModule
+      // ],
+      // bpmnRenderer: {
+      //   defaultFillColor: "var(--default-fill-color)",
+      //   defaultStrokeColor: "var(--default-stroke-color)",
+      //   defaultLabelColor: "var(--default-stroke-color)",
+      // }
     });
 
     async function saveSVG() {
@@ -115,7 +119,7 @@
         var overlays = myBpmnViewer.get("overlays");
 
         // myBpmnViewer.get('styleModule').addStylesToElements(['Activity_02e6p2j'], {'fill':'green'});
-        myBpmnViewer.get('subProcessModule').setViewerInstance(myBpmnViewer);
+        // myBpmnViewer.get('subProcessModule').setViewerInstance(myBpmnViewer);
 
         // zoom to fit full viewport
         canvas.zoom("fit-viewport");
@@ -124,13 +128,16 @@
       }
     }
 
-    var client = new XMLHttpRequest();
-    client.open("GET", "/subProcessDemo.txt");
-    client.onreadystatechange = function () {
-      openDiagram(client.responseText);
-    };
-
-    client.send();
+    fetch("/assets/diagrams/SubProcess.bpmn")
+    .then(data => {
+      data.text()
+      .then(result => {
+        openDiagram(result);
+      })
+    })
+    .catch(error => {
+      console.error("could not load BPMN 2.0 diagram", error);
+    })
   }
 
   init();

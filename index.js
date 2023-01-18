@@ -1,15 +1,15 @@
-import BpmnJSNavigated from 'bpmn-js/lib/NavigatedViewer';
-import BpmnJS from 'bpmn-js/lib/Viewer';
-import styleModule from './lib/styleModule';
-import subProcessModule from './lib/subProcessModule';
+// import Viewer from 'bpmn-js/lib/Viewer';
+import CustomViewer from './CustomViewer';
 
 var bpmnViewer = {
-  Viewer: BpmnJS,
-  NavigatedViewer: BpmnJSNavigated,
-  customModules: {
-    styleModule,
-    subProcessModule,
-  },
+  Viewer: CustomViewer,
+  // NavigatedViewer: BpmnJSNavigated,
+  // customModules: {
+  //   styleModule,
+  //   subProcessModule,
+  // },
 };
+
+console.log(bpmnViewer.Viewer.prototype._modules);
 
 export default bpmnViewer;
