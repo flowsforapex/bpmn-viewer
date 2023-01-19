@@ -10,6 +10,4 @@ var bpmnViewer = {
   // },
 };
 
-console.log(bpmnViewer.Viewer.prototype._modules);
-
 export default bpmnViewer;
