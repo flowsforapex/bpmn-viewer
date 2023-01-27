@@ -1,0 +1,40 @@
+/**
+ * general
+ */
+html, body, .flows4apex-viewer {
+  height: 80vh;
+  background-color: #f0f0f0;
+  padding: 0;
+  margin: 0;
+}
+.bjs-container {
+  --default-fill-color: white;
+  --default-stroke-color: black;
+}
+/**
+ * custom dark mode colors
+ */
+.flows4apex-viewer.FLOWS-DARK {
+  background-color: #2b3035;
+}
+.FLOWS-DARK .bjs-container {
+  --default-fill-color: #2b3035;
+  --default-stroke-color: white;
+}
+.FLOWS-DARK .bjs-powered-by {
+  color: white !important;
+}
+@media (prefers-color-scheme: dark) {
+  .flows4apex-viewer:not(.FLOWS) {
+    background-color: #2b3035;
+  }
+
+  .flows4apex-viewer:not(.FLOWS) .bjs-container {
+    --default-fill-color: #2b3035;
+    --default-stroke-color: white;
+  }
+
+  .flows4apex-viewer:not(.FLOWS) .bjs-powered-by {
+    color: white !important;
+  }
+}

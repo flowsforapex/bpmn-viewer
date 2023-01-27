@@ -21,6 +21,10 @@ module.exports = {
           to: "./index.html",
         },
         {
+          from: path.resolve(__dirname, "assets/css/flows4apex.viewer.css"),
+          to: "assets/css/flows4apex.viewer.css",
+        },
+        {
           from: path.resolve(__dirname, "diagrams"),
           to: "assets/diagrams",
         },
