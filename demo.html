@@ -12,7 +12,7 @@
 </head>
 
 <body>
-  <div class="flows4apex-viewer FLOWS">
+  <div class="flows4apex-viewer FLOWS-DARK">
     <div id="canvas" class="canvas"></div>
   </div>
   <script src="./bundle.js"></script>
@@ -22,8 +22,8 @@
       additionalModules: [
         bpmnViewer.customModules.MoveCanvasModule,
         bpmnViewer.customModules.ZoomScrollModule,
-        bpmnViewer.customModules.callActivityDrilldownModule,
-        bpmnViewer.customModules.drilldownCenteringModule,
+        bpmnViewer.customModules.drilldownCentering,
+        bpmnViewer.customModules.callActivityModule,
         bpmnViewer.customModules.styleModule
       ],
       bpmnRenderer: {
