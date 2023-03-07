@@ -77,6 +77,10 @@ CustomDrilldown.prototype.addOverlay = function (element) {
       // update breadcrumb
       _self.updateBreadcrumb();
 
+      // move down sub process breadcrumb
+      const subProcessBreadcrumb = document.querySelector('.bjs-breadcrumbs:not(#callActivityBreadcrumb)');
+      subProcessBreadcrumb.style.top = '60px';
+
       // invoke loadDiagram of widget
       _self._widget.loadDiagram();
     }
@@ -192,16 +196,15 @@ CustomDrilldown.prototype.setBreadcrumbVisbility = function () {
     this.setPositioning(true);
   } else {
     this._breadcrumb.style.display = 'none';
+    // move up sub process breadcrumb
+    const subProcessBreadcrumb = document.querySelector('.bjs-breadcrumbs:not(#callActivityBreadcrumb)');
+    subProcessBreadcrumb.style.top = '30px';
   }
 };
 
 CustomDrilldown.prototype.setPositioning = function () {
-  // this._canvas.zoom('fit-viewport');
-  
-  // if (breadcrumbVisible) {
-    const breadcrumbHeight = this._breadcrumb.offsetHeight;
-    this._canvas.scroll({ dx: 0, dy: 30 + breadcrumbHeight + 30 });
-  // }
+  const breadcrumbHeight = this._breadcrumb.offsetHeight;
+  this._canvas.scroll({ dx: 0, dy: 30 + breadcrumbHeight + 30 });
 };
 
 CustomDrilldown.$inject = [
