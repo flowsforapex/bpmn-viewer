@@ -5,73 +5,26 @@
   <meta charset="UTF-8" />
   <title>Flows for APEX - Viewer</title>
 
-  <style type="text/css">
-    html,
-    body,
-    .flows4apex-viewer {
-      height: 80vh;
-      background-color: #f0f0f0;
-      padding: 0;
-      margin: 0;
-    }
-
-    .bjs-container {
-      --default-fill-color: white;
-      --default-stroke-color: black;
-    }
-
-    /**
-    * custom dark mode colors
-    */
-    .flows4apex-viewer.FLOWS-DARK {
-      background-color: #2b3035;
-    }
-
-    .FLOWS-DARK .bjs-container {
-      --default-fill-color: #2b3035;
-      --default-stroke-color: white;
-    }
-
-    .FLOWS-DARK .bjs-powered-by {
-      color: white !important;
-    }
-
-    @media (prefers-color-scheme: dark) {
-      .flows4apex-viewer:not(.FLOWS) {
-        background-color: #2b3035;
-      }
-
-      .flows4apex-viewer:not(.FLOWS) .bjs-container {
-        --default-fill-color: #2b3035;
-        --default-stroke-color: white;
-      }
-
-      .flows4apex-viewer:not(.FLOWS) .bjs-powered-by {
-        color: white !important;
-      }
-    }
-
-    #breadcrumb {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      z-index: 100;
-    }
-
-  </style>
+  <link rel="stylesheet" href="/assets/css/flows4apex.viewer.css" type="text/css"/>
+  <link rel="stylesheet" href="/assets/bpmn-js/diagram-js.css" type="text/css"/>
+  <link rel="stylesheet" href="/assets/bpmn-js/bpmn-js.css" type="text/css"/>
+  <link rel="stylesheet" href="/assets/bpmn-js/bpmn-font/css/bpmn-embedded.css" type="text/css"/>
 </head>
 
 <body>
-  <div id="breadcrumb">Load diagram</div>
-  <div id="canvas" class="flows4apex-viewer FLOWS"></div>
+  <div class="flows4apex-viewer FLOWS-DARK">
+    <div id="canvas" class="canvas"></div>
+  </div>
   <script src="./bundle.js"></script>
   <script>
-    var myBpmnViewer = new bpmnViewer.NavigatedViewer({
+    var myBpmnViewer = new bpmnViewer.Viewer({
       container: "#canvas",
       additionalModules: [
-        bpmnViewer.customModules.spViewModule,
-        bpmnViewer.customModules.styleModule,
-        bpmnViewer.customModules.subProcessModule
+        bpmnViewer.customModules.MoveCanvasModule,
+        bpmnViewer.customModules.ZoomScrollModule,
+        bpmnViewer.customModules.drilldownCentering,
+        bpmnViewer.customModules.callActivityModule,
+        bpmnViewer.customModules.styleModule
       ],
       bpmnRenderer: {
         defaultFillColor: "var(--default-fill-color)",
@@ -114,8 +67,8 @@
         var canvas = myBpmnViewer.get("canvas");
         var overlays = myBpmnViewer.get("overlays");
 
-        // myBpmnViewer.get('styleModule').addStylesToElements(['Activity_02e6p2j'], {'fill':'green'});
-        myBpmnViewer.get('subProcessModule').setViewerInstance(myBpmnViewer);
+        myBpmnViewer.get('styleModule').addStylesToElements(['Activity_02e6p2j'], {'fill':'green'});
+        myBpmnViewer.get('customDrilldown').setWidget(myBpmnViewer);
 
         // zoom to fit full viewport
         canvas.zoom("fit-viewport");
@@ -124,13 +77,16 @@
       }
     }
 
-    var client = new XMLHttpRequest();
-    client.open("GET", "/subProcessDemo.txt");
-    client.onreadystatechange = function () {
-      openDiagram(client.responseText);
-    };
-
-    client.send();
+    fetch("/assets/diagrams/SubProcessCallActivity.bpmn")
+    .then(data => {
+      data.text()
+      .then(result => {
+        openDiagram(result);
+      })
+    })
+    .catch(error => {
+      console.error("could not load BPMN 2.0 diagram", error);
+    })
   }
 
   init();

@@ -1,14 +1,19 @@
-import BpmnJSNavigated from 'bpmn-js/lib/NavigatedViewer';
-import BpmnJS from 'bpmn-js/lib/Viewer';
-import styleModule from './lib/styleModule';
-import subProcessModule from './lib/subProcessModule';
+import Viewer from 'bpmn-js/lib/Viewer';
+
+import MoveCanvasModule from 'diagram-js/lib/navigation/movecanvas';
+import ZoomScrollModule from 'diagram-js/lib/navigation/zoomscroll';
+import callActivityModule from './modules/callActivityModule';
+import drilldownCentering from './modules/drilldownCentering';
+import styleModule from './modules/styleModule';
 
 var bpmnViewer = {
-  Viewer: BpmnJS,
-  NavigatedViewer: BpmnJSNavigated,
+  Viewer: Viewer,
   customModules: {
-    styleModule,
-    subProcessModule,
+    MoveCanvasModule,
+    ZoomScrollModule,
+    drilldownCentering,
+    callActivityModule,
+    styleModule
   },
 };
 

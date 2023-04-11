@@ -21,13 +21,16 @@ module.exports = {
           to: "./index.html",
         },
         {
-          from: path.resolve(__dirname, "diagram.txt"),
+          from: path.resolve(__dirname, "assets/css/flows4apex.viewer.css"),
+          to: "assets/css/flows4apex.viewer.css",
         },
         {
-          from: path.resolve(__dirname, "shipment_processes.txt"),
+          from: path.resolve(__dirname, "diagrams"),
+          to: "assets/diagrams",
         },
         {
-          from: path.resolve(__dirname, "subProcessDemo.txt"),
+          from: path.resolve(__dirname, "node_modules/bpmn-js/dist/assets"),
+          to: "assets/bpmn-js",
         },
       ],
     }),
@@ -36,5 +39,17 @@ module.exports = {
   devServer: {
     compress: true,
     port: 8084,
+  },
+  module: {
+    rules: [
+      {
+        test: /\.css$/,
+        use: ["style-loader", "css-loader"],
+      },
+      {
+        test: /\.ttf$/,
+        use: ["file-loader"],
+      },
+    ],
   },
 };
