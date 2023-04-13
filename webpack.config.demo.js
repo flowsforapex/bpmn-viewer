@@ -32,9 +32,6 @@ module.exports = {
           from: path.resolve(__dirname, "node_modules/bpmn-js/dist/assets"),
           to: "assets/bpmn-js",
         },
-        {
-          from: path.resolve(__dirname, "assets/css/mtag.bpmnviewer.css"),
-        },
       ],
     }),
   ],
