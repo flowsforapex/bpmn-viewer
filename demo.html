@@ -57,9 +57,6 @@
       }
     }
 
-    async function init() {
-    // viewer instance
-
     async function openDiagram(bpmnXML) {
       // import diagram
       try {
@@ -79,20 +76,20 @@
       }
     }
 
-    fetch("/assets/diagrams/SubProcessCallActivity.bpmn")
-    .then(data => {
-      data.text()
-      .then(result => {
-        openDiagram(result);
+    async function init() {
+      fetch("/assets/diagrams/SubProcessCallActivity.bpmn")
+      .then(data => {
+        data.text()
+        .then(result => {
+          openDiagram(result);
+        })
       })
-    })
-    .catch(error => {
-      console.error("could not load BPMN 2.0 diagram", error);
-    })
+      .catch(error => {
+        console.error("could not load BPMN 2.0 diagram", error);
+      })
   }
 
   init();
   </script>
-  <!--<button onclick="saveSVG()">SVG</button>-->
 </body>
 </html>
