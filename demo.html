@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="/assets/bpmn-js/diagram-js.css" type="text/css"/>
   <link rel="stylesheet" href="/assets/bpmn-js/bpmn-js.css" type="text/css"/>
   <link rel="stylesheet" href="/assets/bpmn-js/bpmn-font/css/bpmn-embedded.css" type="text/css"/>
+  <link type="text/css" rel="stylesheet" href=" https://static.oracle.com/cdn/apex/21.1.0/libraries/font-apex/2.1/css/font-apex.min.css">
 </head>
 
 <body>
@@ -24,7 +25,8 @@
         bpmnViewer.customModules.ZoomScrollModule,
         bpmnViewer.customModules.drilldownCentering,
         bpmnViewer.customModules.callActivityModule,
-        bpmnViewer.customModules.styleModule
+        bpmnViewer.customModules.styleModule,
+        bpmnViewer.customModules.customPaletteProviderModule
       ],
       bpmnRenderer: {
         defaultFillColor: "var(--default-fill-color)",
@@ -55,9 +57,6 @@
       }
     }
 
-    async function init() {
-    // viewer instance
-
     async function openDiagram(bpmnXML) {
       // import diagram
       try {
@@ -77,20 +76,20 @@
       }
     }
 
-    fetch("/assets/diagrams/SubProcessCallActivity.bpmn")
-    .then(data => {
-      data.text()
-      .then(result => {
-        openDiagram(result);
+    async function init() {
+      fetch("/assets/diagrams/SubProcessCallActivity.bpmn")
+      .then(data => {
+        data.text()
+        .then(result => {
+          openDiagram(result);
+        })
       })
-    })
-    .catch(error => {
-      console.error("could not load BPMN 2.0 diagram", error);
-    })
+      .catch(error => {
+        console.error("could not load BPMN 2.0 diagram", error);
+      })
   }
 
   init();
   </script>
-  <button onclick="saveSVG()">SVG</button>
 </body>
 </html>
