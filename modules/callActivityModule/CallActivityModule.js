@@ -14,12 +14,12 @@ export default function CustomDrilldown(
 
   var _self = this;
 
+  // create and append breadcrumb
   this._breadcrumb = domify('<ul class="bjs-breadcrumbs" id="callActivityBreadcrumb"></ul>');
   var container = canvas.getContainer();
   container.appendChild(this._breadcrumb);
 
-  // this.updateBreadcrumb();
-
+  // add overlay for drilldown-able elements
   eventBus.on('import.render.complete', function () {
     elementRegistry.filter(function (e) {
       return _self.canDrillDown(e);
@@ -38,14 +38,14 @@ CustomDrilldown.prototype.addOverlay = function (element) {
 
   var _self = this;
 
-  var button = domify(
-    `<button class="bjs-drilldown">${ARROW_DOWN_SVG}</button>`);
+  var button = domify(`<button class="bjs-drilldown">${ARROW_DOWN_SVG}</button>`);
 
-  // remove existing overlay
+  // remove (possible) existing overlay
   if (overlays.get({ element: element, type: 'drilldown' }).length) {
     this.removeOverlay(element);
   }
 
+  // add event listener
   button.addEventListener('click', function (event) {
 
     // clicked object
@@ -66,8 +66,7 @@ CustomDrilldown.prototype.addOverlay = function (element) {
       
       // set new diagram properties
       _self._widget.diagramIdentifier = newDiagram.diagramIdentifier;
-      _self._widget.callingDiagramIdentifier =
-        newDiagram.callingDiagramIdentifier;
+      _self._widget.callingDiagramIdentifier = newDiagram.callingDiagramIdentifier;
       _self._widget.callingObjectId = newDiagram.callingObjectId;
       _self._widget.diagram = newDiagram.diagram;
       _self._widget.current = newDiagram.current;
@@ -99,6 +98,7 @@ CustomDrilldown.prototype.addOverlay = function (element) {
 CustomDrilldown.prototype.removeOverlay = function (element) {
   var overlays = this._overlays;
 
+  // remove overlay
   overlays.remove({
     element: element,
     type: 'drilldown'
@@ -124,6 +124,7 @@ CustomDrilldown.prototype.updateBreadcrumb = function () {
       d.callingObjectId === callingObjectId
   );
 
+  // breadcrumb list entry
   var link = domify(
     `<li data-index="${this._breadcrumb.childNodes.length}"
     ${diagramIdentifier ? ` data-diagramIdentifier="${diagramIdentifier}"` : ''}
@@ -133,7 +134,8 @@ CustomDrilldown.prototype.updateBreadcrumb = function () {
     ${callingObjectId ? ` title="called by ${callingObjectId}"` : ''}>` +
     `${breadcrumb}</a></span></li>`);
 
-  link.addEventListener('click', function (event) {
+  // add event listener
+  link.addEventListener('click', function () {
 
     // clicked object
     var { index, diagramidentifier } = link.dataset;
@@ -151,8 +153,7 @@ CustomDrilldown.prototype.updateBreadcrumb = function () {
 
       // set new diagram properties
       _self._widget.diagramIdentifier = newDiagram.diagramIdentifier;
-      _self._widget.callingDiagramIdentifier =
-        newDiagram.callingDiagramIdentifier;
+      _self._widget.callingDiagramIdentifier = newDiagram.callingDiagramIdentifier;
       _self._widget.callingObjectId = newDiagram.callingObjectId;
       _self._widget.diagram = newDiagram.diagram;
       _self._widget.current = newDiagram.current;
@@ -164,10 +165,22 @@ CustomDrilldown.prototype.updateBreadcrumb = function () {
     }
   });
 
+  // append entry
   this._breadcrumb.appendChild(link);
 
-  this.setBreadcrumbVisbility();
+  // toggle visibility
+  this.toggleBreadcrumbVisibility();
 };
+
+CustomDrilldown.prototype.resetBreadcrumb = function() {
+  // remove all entries
+  while(this._breadcrumb.firstChild) {
+    this._breadcrumb.removeChild(this._breadcrumb.firstChild);
+  }
+
+  // toggle visibility
+  this.toggleBreadcrumbVisibility();
+}
 
 CustomDrilldown.prototype.trimBreadcrumbTo = function (index) {
   var flag = false;
@@ -175,7 +188,7 @@ CustomDrilldown.prototype.trimBreadcrumbTo = function (index) {
 
   for (let i = 0; i < this._breadcrumb.childNodes.length; i++) {
     if (flag) {
-      // add to removable nodes
+      // add entry to removable nodes
       removeNodes.push(this._breadcrumb.childNodes[i]);
     } else if (this._breadcrumb.childNodes[i].dataset.index === index) {
       // mark as last node
@@ -186,25 +199,36 @@ CustomDrilldown.prototype.trimBreadcrumbTo = function (index) {
   // remove subsequent nodes
   removeNodes.forEach(n => this._breadcrumb.removeChild(n));
 
-  this.setBreadcrumbVisbility();
+  // toggle visibility
+  this.toggleBreadcrumbVisibility();
 };
 
-CustomDrilldown.prototype.setBreadcrumbVisbility = function () {
+CustomDrilldown.prototype.toggleBreadcrumbVisibility = function () {
   // show/hide breadcrumb (depending on number of entries)
   if (this._breadcrumb.childNodes.length > 1) {
+    
+    const breadcrumbHeight = this._breadcrumb.offsetHeight;
+    
+    // show element
     this._breadcrumb.style.display = 'flex';
-    this.setPositioning(true);
+    
+    // scroll canvas down
+    this._canvas.scroll({ dx: 0, dy: 30 + breadcrumbHeight + 30 });
+
   } else {
-    this._breadcrumb.style.display = 'none';
-    // move up sub process breadcrumb
+
     const subProcessBreadcrumb = document.querySelector('.bjs-breadcrumbs:not(#callActivityBreadcrumb)');
+
+    // hide element
+    this._breadcrumb.style.display = 'none';
+    
+    // move up sub process breadcrumb
     subProcessBreadcrumb.style.top = '30px';
   }
 };
 
 CustomDrilldown.prototype.setPositioning = function () {
-  const breadcrumbHeight = this._breadcrumb.offsetHeight;
-  this._canvas.scroll({ dx: 0, dy: 30 + breadcrumbHeight + 30 });
+  
 };
 
 CustomDrilldown.$inject = [
