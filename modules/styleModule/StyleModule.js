@@ -40,9 +40,9 @@ export default function StyleModule(config) {
   }
   
   this.highlightElements = function (current, completed, error) {
-    addStyleToElements(current, config.currentStyle);
-    addStyleToElements(completed, config.completedStyle);
-    addStyleToElements(error, config.errorStyle);
+    if (current && current.length > 0) addStyleToElements(current, config.currentStyle);
+    if (completed && completed.length > 0) addStyleToElements(completed, config.completedStyle);
+    if (error && error.length > 0) addStyleToElements(error, config.errorStyle);
   };
 
   this.addStyleToSVG = function (svg) {

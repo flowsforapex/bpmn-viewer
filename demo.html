@@ -32,6 +32,24 @@
         defaultFillColor: "var(--default-fill-color)",
         defaultStrokeColor: "var(--default-stroke-color)",
         defaultLabelColor: "var(--default-stroke-color)",
+      },
+      config: {
+        currentStyle: {
+          "fill": "#6aad42",
+          "border": "black",
+          "label": "black"
+        },
+        completedStyle: {
+          "fill": "#8c9eb0",
+          "border": "black",
+          "label": "black"
+        },
+        errorStyle: {
+          "fill": "#d2423b",
+          "border": "black",
+          "label": "white"
+        },
+        allowDownload: true,
       }
     });
 
@@ -40,7 +58,7 @@
         const result = await myBpmnViewer.saveSVG({ format: true });
         const { svg } = result;
 
-        const styledSVG = myBpmnViewer.get('styleModule').addToSVGStyle(svg,'.djs-group { --default-fill-color: white; --default-stroke-color: black; }');
+        const styledSVG = myBpmnViewer.get('styleModule').addStyleToSVG(svg);
 
         var svgBlob = new Blob([styledSVG], {
             type: 'image/svg+xml'
@@ -66,7 +84,9 @@
         var canvas = myBpmnViewer.get("canvas");
         var overlays = myBpmnViewer.get("overlays");
 
-        myBpmnViewer.get('styleModule').addStylesToElements(['Activity_02e6p2j'], {'fill':'green'});
+        // example highlighting
+        myBpmnViewer.get('styleModule').highlightElements(['Activity_1kh5zjx'], [], []);
+        
         myBpmnViewer.get('callActivityModule').setWidget(myBpmnViewer);
 
         // zoom to fit full viewport
