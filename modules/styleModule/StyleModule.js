@@ -1,6 +1,6 @@
-export default function StyleModule(config) {
+export default function StyleModule(config, bpmnRenderer, elementRegistry) {
 
-  function addStyleToElements(elements, css) {
+  this.addStyleToElements = function(elements, css) {
     for (const e of elements) {
       var rect = document.querySelector(
         `g[data-element-id="${e}"]:not(.djs-connection) .djs-visual > rect`
@@ -40,10 +40,17 @@ export default function StyleModule(config) {
   }
   
   this.highlightElements = function (current, completed, error) {
-    if (current && current.length > 0) addStyleToElements(current, config.currentStyle);
-    if (completed && completed.length > 0) addStyleToElements(completed, config.completedStyle);
-    if (error && error.length > 0) addStyleToElements(error, config.errorStyle);
+    if (current && current.length > 0) this.addStyleToElements(current, config.currentStyle);
+    if (completed && completed.length > 0) this.addStyleToElements(completed, config.completedStyle);
+    if (error && error.length > 0) this.addStyleToElements(error, config.errorStyle);
   };
+
+  this.resetHighlighting = function() {
+    console.log(elementRegistry);
+    this.addStyleToElements(
+      Object.keys(elementRegistry._elements),
+      {fill: bpmnRenderer.defaultFillColor, border: bpmnRenderer.defaultStrokeColor, label: bpmnRenderer.defaultLabelColor});
+  }
 
   this.addStyleToSVG = function (svg) {
     var parser = new DOMParser();
@@ -65,5 +72,7 @@ export default function StyleModule(config) {
 
 StyleModule.$inject = [
   // custom viewer properties nested inside parent config object
-  'config.config'
+  'config.config',
+  'config.bpmnRenderer',
+  'elementRegistry'
 ];

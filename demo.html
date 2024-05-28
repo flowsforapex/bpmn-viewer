@@ -25,6 +25,7 @@
         bpmnViewer.customModules.ZoomScrollModule,
         bpmnViewer.customModules.drilldownCentering,
         bpmnViewer.customModules.callActivityModule,
+        bpmnViewer.customModules.subProcessModule,
         bpmnViewer.customModules.styleModule,
         bpmnViewer.customModules.customPaletteProviderModule
       ],
@@ -52,6 +53,42 @@
         allowDownload: true,
       }
     });
+
+    function widget() {
+      this.addHighlighting = function() {
+        myBpmnViewer.get('styleModule').highlightElements(this.current, this.completed, this.error);
+      }
+      this.resetHighlighting = function() {
+        myBpmnViewer.get('styleModule').resetHighlighting();
+      }
+      this.data = {
+        'Activity_1hnl94g': [
+          {
+            "value": 1,
+            "label": "Instance 1",
+            "data": {
+              "completed": ["Event_0ght2pq","Activity_1pmxeod","Event_145677o"]
+            }
+          },
+          {
+            "value": 2,
+            "label": "Instance 2",
+            "data": {
+              "completed": ["Event_0ght2pq"],
+              "current": ["Activity_1pmxeod",]
+            }
+          },
+          {
+            "value": 3,
+            "label": "Instance 3",
+            "data": {
+              "completed": ["Event_0ght2pq"],
+              "error": ["Activity_1pmxeod"]
+            }
+          }
+        ]
+      }
+    }
 
     async function downloadAsSVG() {
       try {
@@ -85,9 +122,16 @@
         var overlays = myBpmnViewer.get("overlays");
 
         // example highlighting
-        myBpmnViewer.get('styleModule').highlightElements(['Activity_1kh5zjx'], [], []);
+        myBpmnViewer.get('styleModule').highlightElements(
+          ["Activity_1hnl94g"],
+          ["Activity_1kh5zjx"],
+          []
+        );
         
-        myBpmnViewer.get('callActivityModule').setWidget(myBpmnViewer);
+        const _widget = new widget();
+
+        myBpmnViewer.get('callActivityModule').setWidget(_widget);
+        myBpmnViewer.get('subProcessModule').setWidget(_widget);
 
         // zoom to fit full viewport
         canvas.zoom("fit-viewport");
