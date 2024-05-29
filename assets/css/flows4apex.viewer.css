@@ -32,3 +32,7 @@
   --palette-background-color: #2b3035;
   --palette-entry-color: white;
 }
+/* Overwrite text color when using bpmn extension */
+.djs-visual > *:not([style*="stroke: var(--default-stroke-color);"]) + text {
+  --default-stroke-color: black;
+}

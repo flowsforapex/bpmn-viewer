@@ -32,7 +32,8 @@
       <bpmn:incoming>Flow_0h6rnou</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_0h6rnou" sourceRef="Gateway_138g1t2" targetRef="Event_1dobd38" />
-    <bpmn:subProcess id="Activity_1hnl94g" name="Sub C">
+    <bpmn:subProcess id="Activity_1hnl94g" name="Sub C" >
+      <bpmn:multiInstanceLoopCharacteristics />
       <bpmn:incoming>Flow_1qf7w7l</bpmn:incoming>
       <bpmn:outgoing>Flow_09pg5hf</bpmn:outgoing>
       <bpmn:startEvent id="Event_0ght2pq">

@@ -1,6 +1,6 @@
 export default function StyleModule(config, bpmnRenderer, elementRegistry) {
 
-  this.addStyleToElements = function(elements, css) {
+  this.addStyleToElements = function (elements, css) {
     for (const e of elements) {
       var rect = document.querySelector(
         `g[data-element-id="${e}"]:not(.djs-connection) .djs-visual > rect`
@@ -37,7 +37,7 @@ export default function StyleModule(config, bpmnRenderer, elementRegistry) {
         if (polygons.length > 0 && paths.length > 0) { paths.forEach(p => (p.style.fill = css.label)); }
       }
     }
-  }
+  };
   
   this.highlightElements = function (current, completed, error) {
     if (current && current.length > 0) this.addStyleToElements(current, config.currentStyle);
@@ -45,11 +45,11 @@ export default function StyleModule(config, bpmnRenderer, elementRegistry) {
     if (error && error.length > 0) this.addStyleToElements(error, config.errorStyle);
   };
 
-  this.resetHighlighting = function() {
+  this.resetHighlighting = function () {
     this.addStyleToElements(
       Object.keys(elementRegistry._elements),
       {fill: bpmnRenderer.defaultFillColor, border: bpmnRenderer.defaultStrokeColor, label: bpmnRenderer.defaultLabelColor});
-  }
+  };
 
   this.addStyleToSVG = function (svg) {
     var parser = new DOMParser();

@@ -12,22 +12,21 @@ export default function SubProcessModule(
   var _self = this;
 
   // create and append select list
-  this._select = domify(`<select class="bjs-breadcrumbs" id="instanceSelect"></select>`);
+  this._select = domify('<select class="bjs-breadcrumbs" id="instanceSelect"></select>');
   canvas.getContainer().appendChild(this._select);
 
   // add event listener for select list
-  this._select.addEventListener('change', function(event) {
+  this._select.addEventListener('change', function (event) {
     _self.loadInstance(event.target.value);
-  })
+  });
 
   // when diagram root changes
   eventBus.on('root.set', function (event) {
-    const type = event.element.type;
+    const {type} = event.element;
     // if drilled down into subprocess
-    if (type === 'bpmn:SubProcess') {
+    if (type === 'bpmn:SubProcess') { // TODO check if multi-instance
       _self.updateSelect(event);
-    }
-    else {
+    } else {
       // hide select list
       _self.toggleSelectVisibility(false);
     }
@@ -38,14 +37,14 @@ SubProcessModule.prototype.setWidget = function (widget) {
   this._widget = widget;
 };
 
-SubProcessModule.prototype.updateSelect = function(event) {
+SubProcessModule.prototype.updateSelect = function (event) {
 
   const translate = this._translate;
 
-  const element = event.element;
+  const {element} = event;
   const businessObject = getBusinessObject(element);
   // id of the opened sub process
-  const id = businessObject.id;
+  const {id} = businessObject;
 
   // TODO retrieve data by using <id>
   const subProcessData = this._widget.multiInstanceData[id];
@@ -63,14 +62,14 @@ SubProcessModule.prototype.updateSelect = function(event) {
   this._select.appendChild(domify(`<option value="">${translate('- Select instance -')}</option>`));
 
   // add all instances
-  instanceIdsList.forEach(i => {
+  instanceIdsList.forEach((i) => {
     this._select.appendChild(domify(`<option value="${i.value}">${i.label}</option>`));
   });
 
   this.toggleSelectVisibility(true);
-}
+};
 
-SubProcessModule.prototype.loadInstance = function(value) {
+SubProcessModule.prototype.loadInstance = function (value) {
 
   this._widget.resetHighlighting();
 
@@ -87,16 +86,16 @@ SubProcessModule.prototype.loadInstance = function(value) {
 
     this._widget.addHighlighting();
   }
-}
+};
 
-SubProcessModule.prototype.clearSelect = function() {
+SubProcessModule.prototype.clearSelect = function () {
   // remove all entries
   while (this._select.firstChild) {
     this._select.removeChild(this._select.firstChild);
   }
 };
 
-SubProcessModule.prototype.toggleSelectVisibility = function(visible) {
+SubProcessModule.prototype.toggleSelectVisibility = function (visible) {
   // show/hide breadcrumb (depending on number of entries)
   if (visible) {
     

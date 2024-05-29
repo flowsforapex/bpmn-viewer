@@ -12,8 +12,8 @@ export default function RightClickModule(
   var _self = this;
 
   // create and append context menu container
-  this._menu = domify(`<div id="contextMenu"></div>`);
-  this._options = domify(`<ul class="menu-options"></ul>`)
+  this._menu = domify('<div id="contextMenu"></div>');
+  this._options = domify('<ul class="menu-options"></ul>');
   
   this._menu.appendChild(this._options);
   
@@ -21,19 +21,19 @@ export default function RightClickModule(
 
   this.closeContextMenu();
 
-  eventBus.on( "element.contextmenu", event => {
+  eventBus.on('element.contextmenu', (event) => {
     event.preventDefault();
     event.stopPropagation();
 
     _self.openContextMenu(event);
   });
 
-  eventBus.on( "element.click", event => {
+  eventBus.on('element.click', (event) => {
     _self.closeContextMenu(event);
   });
 }
 
-RightClickModule.prototype.openContextMenu = function(event) {
+RightClickModule.prototype.openContextMenu = function (event) {
 
   const { element } = event;
   const { id } = element;
@@ -46,9 +46,9 @@ RightClickModule.prototype.openContextMenu = function(event) {
   if (contextmenuData) {
 
     this._options.replaceChildren(
-      ...contextmenuData.map(d => {
+      ...contextmenuData.map((d) => {
         if (d.type === 'link') {
-          return domify(`<li class="menu-option"><a href="${d.url}" target="${d.target}">${d.label}</a></li>`)
+          return domify(`<li class="menu-option"><a href="${d.url}" target="${d.target}">${d.label}</a></li>`);
         }
         return null;
       }) 
@@ -58,15 +58,14 @@ RightClickModule.prototype.openContextMenu = function(event) {
     this._menu.style.top = `${y}px`;
 
     this._menu.style.display = 'block';
-  }
-  else {
+  } else {
     this.closeContextMenu();
   }
-}
+};
 
-RightClickModule.prototype.closeContextMenu = function() {
+RightClickModule.prototype.closeContextMenu = function () {
   this._menu.style.display = 'none';
-}
+};
 
 RightClickModule.prototype.setWidget = function (widget) {
   this._widget = widget;
