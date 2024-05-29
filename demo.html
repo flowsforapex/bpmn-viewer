@@ -12,6 +12,36 @@
   <link type="text/css" rel="stylesheet" href=" https://static.oracle.com/cdn/apex/21.1.0/libraries/font-apex/2.1/css/font-apex.min.css">
 </head>
 
+<style>
+
+  #contextMenu {
+    position: absolute;
+    background-color: white;
+    color: black;
+  }
+
+  #contextMenu .menu-options {
+    list-style: none;
+    padding-left: 0;
+    margin: 0.5em;
+  }
+
+  #contextMenu .menu-option {
+    cursor: pointer;
+  }
+
+  #contextMenu .menu-option a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  /* Disable crosshair cursor when hovering over elements */
+  .djs-hit, .djs-hit-all {
+    cursor: default !important;
+  }
+
+</style>
+
 <body>
   <div class="flows4apex-viewer FLOWS-DARK">
     <div id="canvas" class="canvas"></div>
@@ -27,7 +57,8 @@
         bpmnViewer.customModules.callActivityModule,
         bpmnViewer.customModules.subProcessModule,
         bpmnViewer.customModules.styleModule,
-        bpmnViewer.customModules.customPaletteProviderModule
+        bpmnViewer.customModules.customPaletteProviderModule,
+        bpmnViewer.customModules.rightClickModule
       ],
       bpmnRenderer: {
         defaultFillColor: "var(--default-fill-color)",
@@ -61,7 +92,7 @@
       this.resetHighlighting = function() {
         myBpmnViewer.get('styleModule').resetHighlighting();
       }
-      this.data = {
+      this.multiInstanceData = {
         'Activity_1hnl94g': [
           {
             "value": 1,
@@ -85,6 +116,16 @@
               "completed": ["Event_0ght2pq"],
               "error": ["Activity_1pmxeod"]
             }
+          }
+        ]
+      },
+      this.contextMenuData = {
+        "Activity_1kh5zjx": [
+          {
+            type: "link",
+            url: "https://github.com/mt-ag/bpmn-modeler",
+            label: "Open Simple Form",
+            target: "_blank"
           }
         ]
       }
@@ -132,6 +173,7 @@
 
         myBpmnViewer.get('callActivityModule').setWidget(_widget);
         myBpmnViewer.get('subProcessModule').setWidget(_widget);
+        myBpmnViewer.get('rightClickModule').setWidget(_widget);
 
         // zoom to fit full viewport
         canvas.zoom("fit-viewport");

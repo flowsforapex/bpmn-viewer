@@ -46,7 +46,6 @@ export default function StyleModule(config, bpmnRenderer, elementRegistry) {
   };
 
   this.resetHighlighting = function() {
-    console.log(elementRegistry);
     this.addStyleToElements(
       Object.keys(elementRegistry._elements),
       {fill: bpmnRenderer.defaultFillColor, border: bpmnRenderer.defaultStrokeColor, label: bpmnRenderer.defaultLabelColor});

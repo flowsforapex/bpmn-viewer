@@ -48,7 +48,7 @@ SubProcessModule.prototype.updateSelect = function(event) {
   const id = businessObject.id;
 
   // TODO retrieve data by using <id>
-  const subProcessData = this._widget.data[id];
+  const subProcessData = this._widget.multiInstanceData[id];
 
   // TODO set sub process data
   this._widget.subProcessData = subProcessData;

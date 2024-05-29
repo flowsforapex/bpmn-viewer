@@ -7,6 +7,7 @@ import callActivityModule from './modules/callActivityModule';
 import drilldownCentering from './modules/drilldownCentering';
 import styleModule from './modules/styleModule';
 import subProcessModule from './modules/subProcessModule';
+import rightClickModule from './modules/rightClickModule';
 
 var bpmnViewer = {
   Viewer: Viewer,
@@ -17,7 +18,8 @@ var bpmnViewer = {
     callActivityModule,
     subProcessModule,
     styleModule,
-    customPaletteProviderModule
+    customPaletteProviderModule,
+    rightClickModule
   },
 };
 
