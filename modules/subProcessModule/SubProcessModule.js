@@ -1,34 +1,20 @@
 
 import { getBusinessObject } from 'bpmn-js/lib/util/ModelUtil';
-import { domify } from 'min-dom';
 
 export default function SubProcessModule(
-  canvas, eventBus, translate
+  eventBus, overlays
 ) {
-  this._canvas = canvas;
   this._eventBus = eventBus;
-  this._translate = translate;
+  this._overlays = overlays;
 
   var _self = this;
-
-  // create and append select list
-  this._select = domify('<select class="bjs-breadcrumbs" id="instanceSelect"></select>');
-  canvas.getContainer().appendChild(this._select);
-
-  // add event listener for select list
-  this._select.addEventListener('change', function (event) {
-    _self.loadInstance(event.target.value);
-  });
 
   // when diagram root changes
   eventBus.on('root.set', function (event) {
     const {type} = event.element;
     // if drilled down into subprocess
     if (type === 'bpmn:SubProcess') { // TODO check if multi-instance
-      _self.updateSelect(event);
-    } else {
-      // hide select list
-      _self.toggleSelectVisibility(false);
+      _self.addCounterOverlay(event);
     }
   });
 }
@@ -37,9 +23,7 @@ SubProcessModule.prototype.setWidget = function (widget) {
   this._widget = widget;
 };
 
-SubProcessModule.prototype.updateSelect = function (event) {
-
-  const translate = this._translate;
+SubProcessModule.prototype.addCounterOverlay = function (event) {
 
   const {element} = event;
   const businessObject = getBusinessObject(element);
@@ -49,67 +33,23 @@ SubProcessModule.prototype.updateSelect = function (event) {
   // TODO retrieve data by using <id>
   const subProcessData = this._widget.multiInstanceData[id];
 
-  // TODO set sub process data
-  this._widget.subProcessData = subProcessData;
-
-  // TODO extract this out of data
-  const instanceIdsList = subProcessData;
-
-  // clear select list
-  this.clearSelect();
-
-  // add first empty option
-  this._select.appendChild(domify(`<option value="">${translate('- Select instance -')}</option>`));
-
-  // add all instances
-  instanceIdsList.forEach((i) => {
-    this._select.appendChild(domify(`<option value="${i.value}">${i.label}</option>`));
-  });
-
-  this.toggleSelectVisibility(true);
-
-  this._widget.updateColors();
-};
-
-SubProcessModule.prototype.loadInstance = function (value) {
-
-  if (value) {
-
-    // TODO extract this out of sub process data using <value>
-    const instanceData = this._widget.subProcessData.find(v => v.value == value).data;
-
-    // set new diagram properties
-    // TODO probably need to set the currently selected instance as well
-    this._widget.current = instanceData.current;
-    this._widget.completed = instanceData.completed;
-    this._widget.error = instanceData.error;
-
-    this._widget.updateColors();
+  for (const d in subProcessData) {
+    if (Object.hasOwn(subProcessData, d)) {
+      this._overlays.add(d, {
+        position: {
+          bottom: 14,
+          left: 0
+        },
+        html: `
+          <div class="instance-counter">
+            <div class="completed">${subProcessData[d].completed}</div>
+            <div class="current">${subProcessData[d].current}</div>
+            <div class="error">${subProcessData[d].error}</div>
+          </div>
+          `
+      });
+    }
   }
 };
 
-SubProcessModule.prototype.clearSelect = function () {
-  // remove all entries
-  while (this._select.firstChild) {
-    this._select.removeChild(this._select.firstChild);
-  }
-};
-
-SubProcessModule.prototype.toggleSelectVisibility = function (visible) {
-  // show/hide breadcrumb (depending on number of entries)
-  if (visible) {
-    
-    // show element
-    this._select.style.display = 'block';
-    
-    // move down
-    this._select.style.top = '60px';    
-
-  } else {
-
-    // hide element
-    this._select.style.display = 'none';
-  }
-};
-
-SubProcessModule.$inject = ['canvas', 'eventBus', 'translate'];
+SubProcessModule.$inject = ['eventBus', 'overlays'];

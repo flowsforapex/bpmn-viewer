@@ -1,6 +1,19 @@
 export default function StyleModule(config, bpmnRenderer, elementRegistry) {
 
-  this.addStyleToElements = function (elements, css) {
+  // set global css variables
+  const canvas = document.querySelector('.canvas');
+
+  canvas.style.setProperty('--highlight-current-fill', config.currentStyle.fill);
+  canvas.style.setProperty('--highlight-current-border', config.currentStyle.border);
+  canvas.style.setProperty('--highlight-current-label', config.currentStyle.label);
+  canvas.style.setProperty('--highlight-completed-fill', config.completedStyle.fill);
+  canvas.style.setProperty('--highlight-completed-border', config.completedStyle.border);
+  canvas.style.setProperty('--highlight-completed-label', config.completedStyle.label);
+  canvas.style.setProperty('--highlight-error-fill', config.errorStyle.fill);
+  canvas.style.setProperty('--highlight-error-border', config.errorStyle.border);
+  canvas.style.setProperty('--highlight-error-label', config.errorStyle.label);
+
+  this.addStyleToElements = function (elements, className) {
 
     let element;
 
@@ -9,19 +22,15 @@ export default function StyleModule(config, bpmnRenderer, elementRegistry) {
       element = document.querySelector(`g[data-element-id="${e}"]:not(.djs-connection) .djs-visual`);
 
       if (element) {
-        element.style.setProperty('--highlight-fill', css.fill);
-        element.style.setProperty('--highlight-border', css.border);
-        element.style.setProperty('--highlight-label', css.label);
-
-        element.classList.add('add-highlighting');
+        element.classList.add(className);
       }
     }
   };
   
   this.highlightElements = function (current, completed, error) {
-    if (current && current.length > 0) this.addStyleToElements(current, config.currentStyle);
-    if (completed && completed.length > 0) this.addStyleToElements(completed, config.completedStyle);
-    if (error && error.length > 0) this.addStyleToElements(error, config.errorStyle);
+    if (current && current.length > 0) this.addStyleToElements(current, 'highlight-current');
+    if (completed && completed.length > 0) this.addStyleToElements(completed, 'highlight-completed');
+    if (error && error.length > 0) this.addStyleToElements(error, 'highlight-error');
   };
 
   this.resetHighlighting = function () {
@@ -34,11 +43,9 @@ export default function StyleModule(config, bpmnRenderer, elementRegistry) {
       element = document.querySelector(`g[data-element-id="${e}"]:not(.djs-connection) .djs-visual`);
 
       if (element) {
-        element.style.removeProperty('--highlight-fill');
-        element.style.removeProperty('--highlight-border');
-        element.style.removeProperty('--highlight-label');
-
-        element.classList.remove('add-highlighting');
+        element.classList.remove('highlight-current');
+        element.classList.remove('highlight-completed');
+        element.classList.remove('highlight-error');
       }
     }
   };

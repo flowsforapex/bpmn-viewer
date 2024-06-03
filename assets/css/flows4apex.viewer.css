@@ -48,22 +48,95 @@
   fill: var(--default-stroke-color) !important;
 }
 /**
- * Highlighting
+ * Highlighting: Completed
  */
-.djs-visual.add-highlighting rect,
-.djs-visual.add-highlighting circle,
-.djs-visual.add-highlighting polygon,
-.djs-visual.add-highlighting path {
-  fill: var(--highlight-fill) !important;
+.djs-visual.highlight-completed rect,
+.djs-visual.highlight-completed circle,
+.djs-visual.highlight-completed polygon,
+.djs-visual.highlight-completed path {
+  fill: var(--highlight-completed-fill) !important;
 }
-.djs-visual.add-highlighting rect,
-.djs-visual.add-highlighting circle,
-.djs-visual.add-highlighting polygon {
-  stroke: var(--highlight-border) !important;
+.djs-visual.highlight-completed rect,
+.djs-visual.highlight-completed circle,
+.djs-visual.highlight-completed polygon {
+  stroke: var(--highlight-completed-border) !important;
 }
-.djs-visual.add-highlighting text {
-  fill: var(--highlight-label) !important;
+.djs-visual.highlight-completed text {
+  fill: var(--highlight-completed-label) !important;
 }
-.djs-visual.add-highlighting path {
-  stroke: var(--highlight-label) !important;
+.djs-visual.highlight-completed path {
+  stroke: var(--highlight-completed-label) !important;
+}
+/**
+ * Highlighting: Current
+ */
+.djs-visual.highlight-current rect,
+.djs-visual.highlight-current circle,
+.djs-visual.highlight-current polygon,
+.djs-visual.highlight-current path {
+  fill: var(--highlight-current-fill) !important;
+}
+.djs-visual.highlight-current rect,
+.djs-visual.highlight-current circle,
+.djs-visual.highlight-current polygon {
+  stroke: var(--highlight-current-border) !important;
+}
+.djs-visual.highlight-current text {
+  fill: var(--highlight-current-label) !important;
+}
+.djs-visual.highlight-current path {
+  stroke: var(--highlight-current-label) !important;
+}
+/**
+ * Highlighting: Error
+ */
+.djs-visual.highlight-error rect,
+.djs-visual.highlight-error circle,
+.djs-visual.highlight-error polygon,
+.djs-visual.highlight-error path {
+  fill: var(--highlight-error-fill) !important;
+}
+.djs-visual.highlight-error rect,
+.djs-visual.highlight-error circle,
+.djs-visual.highlight-error polygon {
+  stroke: var(--highlight-error-border) !important;
+}
+.djs-visual.highlight-error text {
+  fill: var(--highlight-error-label) !important;
+}
+.djs-visual.highlight-error path {
+  stroke: var(--highlight-error-label) !important;
+}
+
+
+
+.instance-counter {
+  display: flex;
+}
+.instance-counter div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* padding: 2px 8px; */
+  height: 20px;
+  min-width: 16px;
+  font-size: 14px;
+  margin: 4px 2px;
+  padding: 0px 2px;
+  border-radius: 20px;
+}
+.instance-counter .completed {
+  color: var(--highlight-completed-label);
+  border: 1px solid var(--highlight-completed-border);
+  background-color: var(--highlight-completed-fill)
+}
+.instance-counter .current {
+  color: var(--highlight-current-label);
+  border: 1px solid var(--highlight-current-border);
+  background-color: var(--highlight-current-fill)
+}
+.instance-counter .error {
+  color: var(--highlight-error-label);
+  border: 1px solid var(--highlight-error-border);
+  background-color: var(--highlight-error-fill)
 }
