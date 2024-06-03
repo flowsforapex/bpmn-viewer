@@ -33,6 +33,37 @@
   --palette-entry-color: white;
 }
 /* Overwrite text color when using bpmn extension */
-.djs-visual > *:not([style*="stroke: var(--default-stroke-color);"]) + text {
+.djs-visual:not(.reset-bpmn-colors) > *:not([style*="stroke: var(--default-stroke-color);"]) + text {
   --default-stroke-color: black;
+}
+/* Reset BPMN Colors */
+.djs-visual.reset-bpmn-colors rect,
+.djs-visual.reset-bpmn-colors circle,
+.djs-visual.reset-bpmn-colors polygon,
+.djs-visual.reset-bpmn-colors path {
+  fill: var(--default-fill-color) !important;
+  stroke: var(--default-stroke-color) !important;
+}
+.djs-visual.reset-bpmn-colors text {
+  fill: var(--default-stroke-color) !important;
+}
+/**
+ * Highlighting
+ */
+.djs-visual.add-highlighting rect,
+.djs-visual.add-highlighting circle,
+.djs-visual.add-highlighting polygon,
+.djs-visual.add-highlighting path {
+  fill: var(--highlight-fill) !important;
+}
+.djs-visual.add-highlighting rect,
+.djs-visual.add-highlighting circle,
+.djs-visual.add-highlighting polygon {
+  stroke: var(--highlight-border) !important;
+}
+.djs-visual.add-highlighting text {
+  fill: var(--highlight-label) !important;
+}
+.djs-visual.add-highlighting path {
+  stroke: var(--highlight-label) !important;
 }

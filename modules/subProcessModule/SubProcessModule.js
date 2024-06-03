@@ -67,11 +67,11 @@ SubProcessModule.prototype.updateSelect = function (event) {
   });
 
   this.toggleSelectVisibility(true);
+
+  this._widget.updateColors();
 };
 
 SubProcessModule.prototype.loadInstance = function (value) {
-
-  this._widget.resetHighlighting();
 
   if (value) {
 
@@ -84,7 +84,7 @@ SubProcessModule.prototype.loadInstance = function (value) {
     this._widget.completed = instanceData.completed;
     this._widget.error = instanceData.error;
 
-    this._widget.addHighlighting();
+    this._widget.updateColors();
   }
 };
 

@@ -58,7 +58,7 @@
         bpmnViewer.customModules.subProcessModule,
         bpmnViewer.customModules.styleModule,
         bpmnViewer.customModules.customPaletteProviderModule,
-        bpmnViewer.customModules.rightClickModule
+        // bpmnViewer.customModules.rightClickModule
       ],
       bpmnRenderer: {
         defaultFillColor: "var(--default-fill-color)",
@@ -82,39 +82,47 @@
           "label": "white"
         },
         allowDownload: true,
+        addHighlighting: true,
+        useBPMNcolors: true,
       }
     });
 
     function widget() {
-      this.addHighlighting = function() {
-        myBpmnViewer.get('styleModule').highlightElements(this.current, this.completed, this.error);
-      }
-      this.resetHighlighting = function() {
+      this.updateColors = function() {
+        if (!myBpmnViewer.get('config').config.useBPMNcolors) {
+          myBpmnViewer.get('styleModule').resetBPMNcolors();
+        }
+
         myBpmnViewer.get('styleModule').resetHighlighting();
+
+        if (myBpmnViewer.get('config').config.addHighlighting) {
+          // use from widget (set earlier)
+          myBpmnViewer.get('styleModule').highlightElements(this.current, this.completed, this.error);
+        }
       }
       this.multiInstanceData = {
-        'Activity_1hnl94g': [
+        'Activity_1oy56wg': [
           {
             "value": 1,
             "label": "Instance 1",
             "data": {
-              "completed": ["Event_0ght2pq","Activity_1pmxeod","Event_145677o"]
+              "completed": []
             }
           },
           {
             "value": 2,
             "label": "Instance 2",
             "data": {
-              "completed": ["Event_0ght2pq"],
-              "current": ["Activity_1pmxeod",]
+              "completed": ["Event_1on17fe","Activity_0rqwz3p"],
+              "current": ["Activity_0hkku17",]
             }
           },
           {
             "value": 3,
             "label": "Instance 3",
             "data": {
-              "completed": ["Event_0ght2pq"],
-              "error": ["Activity_1pmxeod"]
+              "completed": [],
+              "error": []
             }
           }
         ]
@@ -162,12 +170,18 @@
         var canvas = myBpmnViewer.get("canvas");
         var overlays = myBpmnViewer.get("overlays");
 
-        // example highlighting
-        myBpmnViewer.get('styleModule').highlightElements(
-          ["Activity_1hnl94g"],
-          ["Activity_1kh5zjx"],
-          []
-        );
+        if (!myBpmnViewer.get('config').config.useBPMNcolors) {
+          myBpmnViewer.get('styleModule').resetBPMNcolors();
+        }
+
+        if (myBpmnViewer.get('config').config.addHighlighting) {
+          // example highlighting
+          myBpmnViewer.get('styleModule').highlightElements(
+            ["Activity_1oy56wg"],
+            ["Activity_1khhvsw","Event_18rof3p"],
+            []
+          );
+        }
         
         const _widget = new widget();
 
@@ -183,7 +197,7 @@
     }
 
     async function init() {
-      fetch("/assets/diagrams/SubProcessCallActivity.bpmn")
+      fetch("/assets/diagrams/SubProcessColors.bpmn")
       .then(data => {
         data.text()
         .then(result => {
