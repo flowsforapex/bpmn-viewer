@@ -35,19 +35,34 @@ SubProcessModule.prototype.addCounterOverlay = function (event) {
 
   for (const d in subProcessData) {
     if (Object.hasOwn(subProcessData, d)) {
-      this._overlays.add(d, {
-        position: {
-          bottom: 14,
-          left: 0
-        },
-        html: `
-          <div class="instance-counter">
-            <div class="completed">${subProcessData[d].completed}</div>
-            <div class="current">${subProcessData[d].current}</div>
-            <div class="error">${subProcessData[d].error}</div>
-          </div>
-          `
-      });
+      if (subProcessData[d].completed) {
+        this._overlays.add(d, {
+          position: {
+            bottom: 10,
+            left: -10
+          },
+          html: `
+            <div class="instance-counter">
+              <div class="completed">${subProcessData[d].completed}</div>
+              <div class="current">${subProcessData[d].current}</div>
+            </div>
+            `
+        });
+      }
+      if (subProcessData[d].error) {
+        this._overlays.add(d, {
+          position: {
+            top: -10,
+            left: -10
+          },
+          html: `
+            <div class="instance-counter">
+              <div></div>
+              <div class="error">${subProcessData[d].error}</div>
+            </div>
+            `
+        });
+      }
     }
   }
 };

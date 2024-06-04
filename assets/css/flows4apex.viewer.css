@@ -112,18 +112,17 @@
 
 .instance-counter {
   display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  height: 20px;
+  width: 120px;
 }
 .instance-counter div {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  /* padding: 2px 8px; */
   height: 20px;
-  min-width: 16px;
-  font-size: 14px;
-  margin: 4px 2px;
-  padding: 0px 2px;
+  min-width: 12px;
   border-radius: 20px;
+  text-align: center;
+  padding: 0px 4px;
 }
 .instance-counter .completed {
   color: var(--highlight-completed-label);
