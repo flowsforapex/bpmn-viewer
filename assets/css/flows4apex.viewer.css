@@ -139,3 +139,81 @@
   border: 1px solid var(--highlight-error-border);
   background-color: var(--highlight-error-fill)
 }
+
+
+.menu-options {
+  font-family: sans-serif;
+  font-size: 12px;
+  font-weight: normal;
+}
+
+
+#modal {
+  display: none;
+  position: fixed;
+  z-index: 999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.4);
+
+  font-family: sans-serif;
+}
+
+#modal-content {
+  width: 750px;
+  height: 500px;
+
+  margin: auto;
+
+  background-color: var(--default-fill-color);
+  border: 1px solid var(--default-stroke-color);
+}
+
+#iteration-header {
+  display: flex;
+}
+
+#iteration-search {
+  background-color: var(--default-fill-color);
+  color: var(--default-stroke-color);
+
+  width: -webkit-fill-available;
+  height: 20px;
+  margin: 10px;
+  padding: 10px;
+
+  border: 1px solid var(--default-stroke-color);
+}
+
+#iteration-header button.fa-times {
+  height: 40px;
+  margin: 10px 10px 10px 0px;
+
+  background-color: var(--default-fill-color);
+  color: var(--default-stroke-color);
+
+  border: 1px solid var(--default-stroke-color);
+}
+
+#iteration-list {
+  width: 100%;
+  
+  color: var(--default-stroke-color);
+
+  border-spacing: 10px;
+}
+
+#iteration-list th {
+  text-align: left;
+}
+
+#iteration-list tr.clickable {
+  cursor: pointer;
+}
+
+.bjs-crumb + .bjs-drilldown {
+  margin-left: 8px;
+}

@@ -55,7 +55,7 @@
         bpmnViewer.customModules.ZoomScrollModule,
         bpmnViewer.customModules.drilldownCentering,
         bpmnViewer.customModules.callActivityModule,
-        bpmnViewer.customModules.subProcessModule,
+        bpmnViewer.customModules.multiInstanceModule,
         bpmnViewer.customModules.styleModule,
         bpmnViewer.customModules.customPaletteProviderModule,
         bpmnViewer.customModules.rightClickModule
@@ -135,7 +135,7 @@
         const _widget = new widget();
 
         myBpmnViewer.get('callActivityModule').setWidget(_widget);
-        myBpmnViewer.get('subProcessModule').setWidget(_widget);
+        myBpmnViewer.get('multiInstanceModule').setWidget(_widget);
         myBpmnViewer.get('rightClickModule').setWidget(_widget);
 
         /* DEMO DATA - must be attached to widget */
@@ -143,20 +143,77 @@
         _widget.completed = ["Activity_1khhvsw","Event_18rof3p"];
         _widget.error = [];
 
+        /*
         _widget.multiInstanceData = {
           "Activity_1oy56wg": {
-            // "Event_1on17fe": {
-            //   "completed": 100,
-            //   "current": 0,
-            //   "error": 0,
-            // },
             "Activity_0rqwz3p": {
               "completed": 900,
               "current": 98,
               "error": 2,
             },
           }
-        },
+        };
+        */
+        _widget.multiInstanceData = {
+          'Activity_1khhvsw': [
+            {
+              "stepKey": "12345",
+              "loopCounter": 1,
+              "description": "Iteration 1: Research Department",
+              "status": "running",
+            },
+            {
+              "stepKey": "23456",
+              "loopCounter": 2,
+              "description": "Iteration 2: Human Resources",
+              "status": "completed",
+            }
+          ],
+          'Activity_1oy56wg': [
+            {
+              "stepKey": "abcde",
+              "loopCounter": 1,
+              "description": "Iteration 1: Employee SCOTT (Research Department)",
+              "status": "running",
+              "highlighting": {
+                "completed": ["Event_1on17fe"],
+                "current": ["Activity_0rqwz3p"]
+              }
+            },
+            {
+              "stepKey": "fghij",
+              "loopCounter": 2,
+              "description": "Iteration 2: Employee MILLER (Human Resources)",
+              "status": "running",
+              "highlighting": {
+                "completed": ["Event_1on17fe","Activity_0rqwz3p","Activity_0hkku17"],
+                "current": ["Activity_15ttml3"]
+              }
+            },
+            {
+              "stepKey": "klmno",
+              "loopCounter": 3,
+              "description": "Iteration 3: Employee GRANT (Board)",
+              "status": "error",
+              "highlighting": {
+                "completed": ["Event_1on17fe"],
+                "error": ["Activity_0rqwz3p"]
+              }
+            },
+            {
+              "stepKey": "pqrst",
+              "loopCounter": 4,
+              "description": "Iteration 4: Employee SMITH (Research Department)",
+              "status": "completed",
+              "highlighting": {
+                "completed": ["Event_1on17fe","Activity_0rqwz3p","Activity_0hkku17","Activity_15ttml3","Event_0obsa93"],
+              }
+            }
+          ]
+        };
+
+        myBpmnViewer.get('multiInstanceModule').addOverlays();
+
         _widget.contextMenuData = { // TODO add overlay/icon to inform that link is available here?
           "Activity_1khhvsw": [
             {
@@ -166,12 +223,21 @@
               target: "_blank"
             }
           ]
-        }
+        };
+
+        // overlays.add('Activity_1khhvsw', {
+        //   position: {
+        //     bottom: 22,
+        //     right: 22
+        //   },
+        //   html: '<span class="fa fa-external-link">'
+        // });
 
         if ( myBpmnViewer.get('config').config.addHighlighting || myBpmnViewer.get('config').config.useBPMNcolors ) {
             const eventBus = myBpmnViewer.get('eventBus');
 
             eventBus.on('root.set', () => {
+              // TODO reset colors (after possible drilldown into multi-instances)
               _widget.updateColors();
             });
 

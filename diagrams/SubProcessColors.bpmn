@@ -7,6 +7,7 @@
     <bpmn:userTask id="Activity_1khhvsw" name="red" apex:type="apexPage" apex:manualInput="false">
       <bpmn:incoming>Flow_1p6lpnh</bpmn:incoming>
       <bpmn:outgoing>Flow_05y3f1g</bpmn:outgoing>
+      <bpmn:multiInstanceLoopCharacteristics />
     </bpmn:userTask>
     <bpmn:sequenceFlow id="Flow_1p6lpnh" sourceRef="Event_18rof3p" targetRef="Activity_1khhvsw" />
     <bpmn:task id="Activity_07tnive" name="yellow">
