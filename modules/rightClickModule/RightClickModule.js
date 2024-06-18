@@ -1,5 +1,4 @@
 
-import { getBusinessObject } from 'bpmn-js/lib/util/ModelUtil';
 import { domify } from 'min-dom';
 
 export default function RightClickModule(
@@ -12,7 +11,7 @@ export default function RightClickModule(
   var _self = this;
 
   // create and append context menu container
-  this._menu = domify('<div id="contextMenu"></div>');
+  this._menu = domify('<div id="context-menu"></div>');
   this._options = domify('<ul class="menu-options"></ul>');
   
   this._menu.appendChild(this._options);
@@ -41,12 +40,12 @@ RightClickModule.prototype.openContextMenu = function (event) {
   const x = event.originalEvent.pageX;
   const y = event.originalEvent.pageY;
 
-  const contextmenuData = this._widget.contextMenuData[id];
+  const contextMenuData = this._widget.contextMenuData[id];
 
-  if (contextmenuData) {
+  if (contextMenuData) {
 
     this._options.replaceChildren(
-      ...contextmenuData.map((d) => {
+      ...contextMenuData.map((d) => {
         if (d.type === 'link') {
           return domify(`<li class="menu-option"><a href="${d.url}" target="${d.target}">${d.label}</a></li>`);
         }

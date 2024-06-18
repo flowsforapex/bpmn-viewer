@@ -256,11 +256,9 @@ MultiInstanceModule.prototype.loadIteration = function (value) {
     if (highlightingData) {
       // set new diagram properties
       // TODO probably need to set the currently selected instance as well
-      this._widget.current = highlightingData.current;
-      this._widget.completed = highlightingData.completed;
-      this._widget.error = highlightingData.error;
+      const {current, completed, error} = highlightingData;
 
-      this._widget.updateColors();
+      this._widget.updateColors(current, completed, error);
     }
   }
 };
