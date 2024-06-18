@@ -17,9 +17,12 @@ export default function MultiInstanceModule(
   const modal = domify(`
     <div id="modal">
       <div id ="modal-content">
-        <div id="iteration-header">
-          <input type="text" id="iteration-search" placeholder="Search.."/>
+        <div id="iteration-title">
+          <span></span>
           <button class="fa fa-times"></button>
+        </div>
+        <div id="iteration-search">
+          <input type="text" placeholder="Search.."/>
         </div>
         <table id="iteration-list">
           <thead>
@@ -40,12 +43,12 @@ export default function MultiInstanceModule(
 
   eventBus.on('import.render.complete', function () {
     // add search listener for filtering
-    const searchbar = domQuery('#iteration-search');
+    const searchbar = domQuery('#iteration-search input');
     searchbar.addEventListener('keyup', function (event) {
       _self.filterIterations(event);
     });
     // add close listener
-    const closeButton = domQuery('#iteration-header button.fa-times');
+    const closeButton = domQuery('#iteration-title button.fa-times');
     closeButton.addEventListener('click', function (event) {
       _self.closeIterations();
     });
@@ -163,7 +166,7 @@ MultiInstanceModule.prototype.addCounterOverlay = function (event) {
 
 MultiInstanceModule.prototype.openDialog = function () {
 
-  const searchbar = domQuery('#iteration-search');
+  const searchbar = domQuery('#iteration-search input');
   const modal = domQuery('#modal');
 
   // clear searchbar
@@ -206,6 +209,11 @@ MultiInstanceModule.prototype.loadTable = function (data) {
 MultiInstanceModule.prototype.openIterations = function (element) {
 
   const {id} = element;
+  
+  const businessObject = getBusinessObject(element);
+  
+  const {name} = businessObject;
+  
   // TODO retrieve data by using <id>
   const subProcessData = this._widget.multiInstanceData[id];
 
@@ -218,6 +226,10 @@ MultiInstanceModule.prototype.openIterations = function (element) {
     this._widget.subProcessData = subProcessData;
 
     this.loadTable(subProcessData);
+
+    // set title
+    const title = domQuery('#iteration-title span');
+    title.textContent = name;
 
     this.openDialog();
 
@@ -254,8 +266,6 @@ MultiInstanceModule.prototype.loadIteration = function (value) {
 };
 
 MultiInstanceModule.prototype.filterIterations = function (event) {
-
-  console.log(event);
 
   const {value} = event.target;
 

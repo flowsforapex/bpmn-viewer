@@ -1,3 +1,11 @@
+.flows4apex-viewer {
+  --color-flows-button-green: #52B415;
+
+  /* copied from modeler */
+  --color-flows-dialog-background: white;
+  --color-flows-dialog-button: #f8f8f8;
+  --color-flows-dialog-input: hsl(225, 10%, 97%);
+}
 /**
  * general
  */
@@ -14,6 +22,12 @@
  */
 .FLOWS-DARK {
   --color-flows-dark-background: #2b3035;
+  --color-flows-lighter-dark-background: #32383d;
+
+  /* copied from modeler */
+  --color-flows-dialog-background: var(--color-flows-lighter-dark-background);
+  --color-flows-dialog-button: #282c30;
+  --color-flows-dialog-input: #282c30;
 }
 /**
  * custom colors
@@ -24,6 +38,9 @@
 .FLOWS-DARK .bjs-container {
   --default-fill-color: var(--color-flows-dark-background);
   --default-stroke-color: white;
+}
+.FLOWS-DARK .bjs-breadcrumbs li:last-of-type a {
+  color: white;
 }
 .FLOWS-DARK .bjs-powered-by {
   color: white !important;
@@ -107,47 +124,13 @@
 .djs-visual.highlight-error path {
   stroke: var(--highlight-error-label) !important;
 }
-
-
-
-.instance-counter {
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  height: 20px;
-  width: 120px;
-}
-.instance-counter div {
-  height: 20px;
-  min-width: 12px;
-  border-radius: 20px;
-  text-align: center;
-  padding: 0px 4px;
-}
-.instance-counter .completed {
-  color: var(--highlight-completed-label);
-  border: 1px solid var(--highlight-completed-border);
-  background-color: var(--highlight-completed-fill)
-}
-.instance-counter .current {
-  color: var(--highlight-current-label);
-  border: 1px solid var(--highlight-current-border);
-  background-color: var(--highlight-current-fill)
-}
-.instance-counter .error {
-  color: var(--highlight-error-label);
-  border: 1px solid var(--highlight-error-border);
-  background-color: var(--highlight-error-fill)
-}
-
-
+/* Context menu */
 .menu-options {
   font-family: sans-serif;
   font-size: 12px;
   font-weight: normal;
 }
-
-
+/* Iteration dialog */
 #modal {
   display: none;
   position: fixed;
@@ -161,43 +144,53 @@
 
   font-family: sans-serif;
 }
-
 #modal-content {
   width: 750px;
   height: 500px;
 
   margin: auto;
 
-  background-color: var(--default-fill-color);
-  border: 1px solid var(--default-stroke-color);
+  background-color: var(--color-flows-dialog-background);
+  border: 1px solid #888;
 }
-
-#iteration-header {
+#iteration-title {
   display: flex;
+  justify-content: space-between;
+  
+  margin: 10px;
 }
+#iteration-title span {
+  font-size: 24px;
+  color: var(--default-stroke-color);
+}
+#iteration-title button.fa-times {
+  height: 30px;
+  width: 30px;
 
-#iteration-search {
-  background-color: var(--default-fill-color);
+  background-color: var(--color-flows-dialog-button);
   color: var(--default-stroke-color);
 
+  border: 1px solid #ccc;
+  border-radius: 2px;
+
+  cursor: pointer;
+}
+#iteration-title button.fa-times:hover {
+  color: var(--color-flows-button-green);
+}
+#iteration-search {
+  margin: 10px;
+}
+#iteration-search input {
   width: -webkit-fill-available;
   height: 20px;
-  margin: 10px;
   padding: 10px;
-
-  border: 1px solid var(--default-stroke-color);
-}
-
-#iteration-header button.fa-times {
-  height: 40px;
-  margin: 10px 10px 10px 0px;
-
-  background-color: var(--default-fill-color);
+  
+  background-color: var(--color-flows-dialog-input);
   color: var(--default-stroke-color);
 
-  border: 1px solid var(--default-stroke-color);
+  border: 1px solid #888;
 }
-
 #iteration-list {
   width: 100%;
   
@@ -205,15 +198,16 @@
 
   border-spacing: 10px;
 }
-
 #iteration-list th {
   text-align: left;
 }
-
 #iteration-list tr.clickable {
   cursor: pointer;
 }
-
+.bjs-drilldown.fa-list {
+  color: white;
+}
+/* Breadcrumb */
 .bjs-crumb + .bjs-drilldown {
   margin-left: 8px;
 }
