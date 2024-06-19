@@ -24,16 +24,18 @@ export default function MultiInstanceModule(
         <div id="iteration-search">
           <input type="text" placeholder="Search.."/>
         </div>
-        <table id="iteration-list">
-          <thead>
-            <tr>
-              <th>Loop Counter</th>
-              <th>Description</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
+        <div id="iteration-list">
+            <table>
+              <thead>
+                <tr>
+                  <th>Loop Counter</th>
+                  <th>Description</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+          </table>
+        </div>
       </div>
     </div>
   `);

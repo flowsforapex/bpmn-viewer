@@ -218,6 +218,10 @@
   border: 1px solid #888;
 }
 #iteration-list {
+  height: 400px;
+  overflow-y: auto;
+}
+#iteration-list table {
   width: 100%;
   
   color: var(--default-stroke-color);
