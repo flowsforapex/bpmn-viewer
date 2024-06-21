@@ -60,7 +60,7 @@ export default function MultiInstanceModule(
   eventBus.on('root.set', function (event) {
     const element = getBusinessObject(event.element);
     // if drilled down into subprocess
-    if (is(element, 'bpmn:SubProcess')) { // TODO check if multi-instance
+    if (is(element, 'bpmn:SubProcess') && _self.hasIterationData(element)) {
       _self.addBreadcrumbButton(element);
     }
   });
@@ -71,10 +71,15 @@ MultiInstanceModule.prototype.addOverlays = function () {
   const _this = this;
   
   this._elementRegistry.filter(function (e) {
-    return _this.hasMultiInstance(e);
+    return !(is(e, 'bpmn:SubProcess')) && _this.hasIterationData(e);
   }).forEach(function (el) {
     _this.addOverlay(el);
   });
+};
+
+MultiInstanceModule.prototype.isMultiInstanceSubProcess = function (element) {
+  const businessObject = getBusinessObject(element);
+  return is(businessObject, 'bpmn:SubProcess') && this.hasIterationData(businessObject);
 };
 
 MultiInstanceModule.prototype.addOverlay = function (element) {
@@ -112,59 +117,13 @@ MultiInstanceModule.prototype.addBreadcrumbButton = function (element) {
   breadcrumb.appendChild(button);
 };
 
-MultiInstanceModule.prototype.hasMultiInstance = function (element) {
-  return (!(is(element, 'bpmn:SubProcess')) && this._widget.multiInstanceData[element.id]);
+MultiInstanceModule.prototype.hasIterationData = function (element) {
+  return (this._widget.iterationData && this._widget.iterationData[element.id]);
 };
 
 MultiInstanceModule.prototype.setWidget = function (widget) {
   this._widget = widget;
 };
-
-/*
-MultiInstanceModule.prototype.addCounterOverlay = function (event) {
-
-  const {element} = event;
-  const businessObject = getBusinessObject(element);
-  // id of the opened sub process
-  const {id} = businessObject;
-
-  // TODO retrieve data by using <id>
-  const subProcessData = this._widget.multiInstanceData[id];
-
-  for (const d in subProcessData) {
-    if (Object.hasOwn(subProcessData, d)) {
-      if (subProcessData[d].completed) {
-        this._overlays.add(d, {
-          position: {
-            bottom: 10,
-            left: -10
-          },
-          html: `
-            <div class="instance-counter">
-              <div class="completed">${subProcessData[d].completed}</div>
-              <div class="current">${subProcessData[d].current}</div>
-            </div>
-            `
-        });
-      }
-      if (subProcessData[d].error) {
-        this._overlays.add(d, {
-          position: {
-            top: -10,
-            left: -10
-          },
-          html: `
-            <div class="instance-counter">
-              <div></div>
-              <div class="error">${subProcessData[d].error}</div>
-            </div>
-            `
-        });
-      }
-    }
-  }
-};
-*/
 
 MultiInstanceModule.prototype.openDialog = function () {
 
@@ -217,7 +176,7 @@ MultiInstanceModule.prototype.openIterations = function (element) {
   const {name} = businessObject;
   
   // TODO retrieve data by using <id>
-  const subProcessData = this._widget.multiInstanceData[id];
+  const subProcessData = this._widget.iterationData[id];
 
   if (subProcessData) {
 
@@ -261,6 +220,8 @@ MultiInstanceModule.prototype.loadIteration = function (value) {
       const {current, completed, error} = highlightingData;
 
       this._widget.updateColors(current, completed, error);
+
+      // TODO update breadcrumb
     }
   }
 };
@@ -269,7 +230,9 @@ MultiInstanceModule.prototype.filterIterations = function (event) {
 
   const {value} = event.target;
 
-  const filtered = this._widget.subProcessData.filter(d => d.description.includes(value)); // TODO make other columns searchable as well
+  const filtered = this._widget.subProcessData.filter(
+    d => d.description.includes(value) || d.status.includes(value)
+  ); // TODO make other columns searchable as well
 
   this.loadTable(filtered);
 };

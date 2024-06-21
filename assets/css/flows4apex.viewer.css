@@ -209,7 +209,7 @@
 }
 #iteration-search input {
   width: -webkit-fill-available;
-  height: 20px;
+  min-height: 20px;
   padding: 10px;
   
   background-color: var(--color-flows-dialog-input);

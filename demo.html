@@ -62,15 +62,25 @@
 
     function widget() {
       this.updateColors = function(current, completed, error) {
-        if (!myBpmnViewer.get('config').config.useBPMNcolors) {
-          myBpmnViewer.get('styleModule').resetBPMNcolors();
+
+        const config = myBpmnViewer.get('config').config;
+        const styleModule = myBpmnViewer.get('styleModule');
+
+        this.resetColors()
+
+        if (config.addHighlighting) {
+          styleModule.highlightElements(current, completed, error);
+        }
+      }
+      this.resetColors = function() {
+        const config = myBpmnViewer.get('config').config;
+        const styleModule = myBpmnViewer.get('styleModule');
+
+        if (!config.useBPMNcolors) {
+          styleModule.resetBPMNcolors();
         }
 
-        myBpmnViewer.get('styleModule').resetHighlighting();
-
-        if (myBpmnViewer.get('config').config.addHighlighting) {
-          myBpmnViewer.get('styleModule').highlightElements(current, completed, error);
-        }
+        styleModule.resetHighlighting();
       }
     }
 
@@ -116,7 +126,7 @@
         _widget.completed = ["Activity_1khhvsw","Event_18rof3p"];
         _widget.error = [];
 
-        _widget.multiInstanceData = {
+        _widget.iterationData = {
           'Activity_1khhvsw': [
             {
               "stepKey": "12345",
@@ -196,14 +206,24 @@
         // });
 
         if ( myBpmnViewer.get('config').config.addHighlighting || myBpmnViewer.get('config').config.useBPMNcolors ) {
-            const eventBus = myBpmnViewer.get('eventBus');
+          const config = myBpmnViewer.get('config').config;
+          const eventBus = myBpmnViewer.get('eventBus');
+          const multiInstanceModule = myBpmnViewer.get('multiInstanceModule');
+          const styleModule = myBpmnViewer.get('styleModule');
+          
+          _widget.updateColors(_widget.current, _widget.completed, _widget.error);
 
-            eventBus.on('root.set', () => {
+          eventBus.on('root.set', (event) => {
+            const element = event.element;
+
+            if (multiInstanceModule.isMultiInstanceSubProcess(element)) {
+              _widget.resetColors();
+            }
+            else {
               _widget.updateColors(_widget.current, _widget.completed, _widget.error);
-            });
-
-            _widget.updateColors(_widget.current, _widget.completed, _widget.error);
-          }
+            }
+          });
+        }
 
         // zoom to fit full viewport
         canvas.zoom("fit-viewport");
