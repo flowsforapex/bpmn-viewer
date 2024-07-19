@@ -211,8 +211,10 @@ MultiInstanceModule.prototype.loadIteration = function (value) {
 
   if (value) {
 
+    const iterationData = this._widget.subProcessData.find(v => v.stepKey == value);
+
     // TODO extract this out of sub process data using <value>
-    const highlightingData = this._widget.subProcessData.find(v => v.stepKey == value).highlighting;
+    const highlightingData = iterationData.highlighting;
 
     if (highlightingData) {
       // set new diagram properties
@@ -222,6 +224,17 @@ MultiInstanceModule.prototype.loadIteration = function (value) {
       this._widget.updateColors(current, completed, error);
 
       // TODO update breadcrumb
+      const breadcrumb = domQuery('.bjs-breadcrumbs li:last-child'); // TODO fix selector for excluding call activity breadcrumb
+
+      const element = domify(`<span class="bjs-crumb iteration" style="margin-left: 8px;">
+        <a>${iterationData.description}</a>
+      </span>`);
+
+      if (breadcrumb.lastChild.classList.contains('iteration')) {
+        breadcrumb.lastChild.replaceWith(element);
+      } else {
+        breadcrumb.appendChild(element);
+      }
     }
   }
 };
