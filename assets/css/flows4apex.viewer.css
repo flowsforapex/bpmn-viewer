@@ -234,7 +234,7 @@
 #iteration-list tr.clickable {
   cursor: pointer;
 }
-.bjs-drilldown.fa-list {
+.bjs-drilldown.fa-list, .bjs-drilldown.fa-external-link {
   color: white;
 }
 /* Breadcrumb */

@@ -31,7 +31,8 @@
         bpmnViewer.customModules.multiInstanceModule,
         bpmnViewer.customModules.styleModule,
         bpmnViewer.customModules.customPaletteProviderModule,
-        bpmnViewer.customModules.rightClickModule
+        bpmnViewer.customModules.rightClickModule,
+        bpmnViewer.customModules.userTaskModule
       ],
       bpmnRenderer: {
         defaultFillColor: "var(--default-fill-color)",
@@ -120,6 +121,7 @@
         myBpmnViewer.get('callActivityModule').setWidget(_widget);
         myBpmnViewer.get('multiInstanceModule').setWidget(_widget);
         myBpmnViewer.get('rightClickModule').setWidget(_widget);
+        myBpmnViewer.get('userTaskModule').setWidget(_widget);
 
         /* DEMO DATA - must be attached to widget */
         _widget.current = ["Activity_1oy56wg"];
@@ -194,16 +196,29 @@
               label: "Open Simple Form",
               target: "_blank"
             }
+          ],
+          "Activity_1cro1hb": [
+            {
+              type: "link",
+              url: "https://github.com/mt-ag/bpmn-viewer",
+              label: "Open Simple Form",
+              target: "_blank"
+            }
           ]
         };
 
-        // overlays.add('Activity_1khhvsw', {
-        //   position: {
-        //     bottom: 22,
-        //     right: 22
-        //   },
-        //   html: '<span class="fa fa-external-link">'
-        // });
+        _widget.userTaskData = { // TODO add overlay/icon to inform that link is available here?
+          "Activity_1khhvsw": {
+            url: "https://github.com/mt-ag/bpmn-modeler",
+            target: "_blank",
+          },
+          "Activity_1cro1hb": {
+            url: "https://github.com/mt-ag/bpmn-viewer",
+            target: "_self",
+          },
+        };
+
+        myBpmnViewer.get('userTaskModule').addOverlays();
 
         if ( myBpmnViewer.get('config').config.addHighlighting || myBpmnViewer.get('config').config.useBPMNcolors ) {
           const config = myBpmnViewer.get('config').config;
@@ -233,7 +248,7 @@
     }
 
     async function init() {
-      fetch("/assets/diagrams/SubProcessColorsExpanded.bpmn")
+      fetch("/assets/diagrams/SubProcessColors.bpmn")
       .then(data => {
         data.text()
         .then(result => {
