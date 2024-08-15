@@ -20,7 +20,7 @@ var bpmnViewer = {
     multiInstanceModule,
     styleModule,
     customPaletteProviderModule,
-    rightClickModule,
+    // rightClickModule,
     userTaskModule
   },
 };

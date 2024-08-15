@@ -31,7 +31,7 @@
         bpmnViewer.customModules.multiInstanceModule,
         bpmnViewer.customModules.styleModule,
         bpmnViewer.customModules.customPaletteProviderModule,
-        bpmnViewer.customModules.rightClickModule,
+        // bpmnViewer.customModules.rightClickModule,
         bpmnViewer.customModules.userTaskModule
       ],
       bpmnRenderer: {
@@ -120,7 +120,7 @@
 
         myBpmnViewer.get('callActivityModule').setWidget(_widget);
         myBpmnViewer.get('multiInstanceModule').setWidget(_widget);
-        myBpmnViewer.get('rightClickModule').setWidget(_widget);
+        // myBpmnViewer.get('rightClickModule').setWidget(_widget);
         myBpmnViewer.get('userTaskModule').setWidget(_widget);
 
         /* DEMO DATA - must be attached to widget */
@@ -182,6 +182,13 @@
               "highlighting": {
                 "completed": ["Event_1on17fe","Activity_0rqwz3p","Activity_0hkku17","Activity_15ttml3","Event_0obsa93"],
               }
+            },
+            {
+              "stepKey": null,
+              "loopCounter": 5,
+              "description": "Iteration 5: Employee MAYER (Board)",
+              "status": "notStarted",
+              "highlighting": {}
             }
           ]
         };
@@ -207,7 +214,7 @@
           ]
         };
 
-        _widget.userTaskData = { // TODO add overlay/icon to inform that link is available here?
+        _widget.userTaskData = {
           "Activity_1khhvsw": {
             url: "https://github.com/mt-ag/bpmn-modeler",
             target: "_blank",
