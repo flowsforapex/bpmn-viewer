@@ -6,13 +6,15 @@ import { domify, query as domQuery } from 'min-dom';
 export default function MultiInstanceModule(
   canvas, eventBus, elementRegistry, translate, overlays
 ) {
+  var _self = this;
+  
   this._canvas = canvas;
   this._eventBus = eventBus;
   this._elementRegistry = elementRegistry;
   this._translate = translate;
   this._overlays = overlays;
 
-  var _self = this;
+  this.breadcrumbData = [];
 
   const modal = domify(`
     <div id="modal">
@@ -58,11 +60,17 @@ export default function MultiInstanceModule(
 
   // when diagram root changes
   eventBus.on('root.set', function (event) {
+
     const element = getBusinessObject(event.element);
+
     // if drilled down into subprocess
     if (is(element, 'bpmn:SubProcess') && _self.hasIterationData(element)) {
-      _self.addBreadcrumbButton(element);
+      _self.setSubprocessData(element);
+      _self.updateBreadcrumb(element);
     }
+
+    _self.resetBreadcrumbData();
+    _self.updateHighlighting();
   });
 }
 
@@ -102,23 +110,72 @@ MultiInstanceModule.prototype.addOverlay = function (element) {
   });
 };
 
-MultiInstanceModule.prototype.addBreadcrumbButton = function (element) {
+MultiInstanceModule.prototype.getBreadcrumbElements = function () {
+  const breadcrumb = domQuery('.bjs-breadcrumbs'); // TODO fix selector for excluding call activity breadcrumb
+  return [...breadcrumb.children];
+};
 
-  const breadcrumb = domQuery('.bjs-breadcrumbs li:last-child'); // TODO fix selector for excluding call activity breadcrumb
 
-  const button = domify('<button class="bjs-drilldown fa fa-list"></button>');
+MultiInstanceModule.prototype.getLastBreadcrumbIndex = function () {
+    const elements = this.getBreadcrumbElements();
+    return elements.length - 1;
+};
+
+MultiInstanceModule.prototype.resetBreadcrumbData = function () {
+  const lastIndex = this.getLastBreadcrumbIndex();
+  
+  for (let i = this.breadcrumbData.length - 1; i > lastIndex; i--) {
+    this.breadcrumbData[i] = null;
+  }
+};
+
+MultiInstanceModule.prototype.updateBreadcrumb = function (element) {
+
+  const elements = this.getBreadcrumbElements();
 
   const _this = this;
 
-  button.addEventListener('click', function (event) {
-    _this.openIterations(element);
-  });
+  for (let i = 0; i < elements.length; i++) {
 
-  breadcrumb.appendChild(button);
+    // if last breadcrumb entry
+    if (i === elements.length - 1 && !domQuery('button.bjs-drilldown', elements[i])) {
+      // create button
+      const button = domify('<button class="bjs-drilldown fa fa-list"></button>');
+      // add event listener
+      button.addEventListener('click', function (event) {
+        // open iterations for this element
+        _this.openIterations(element);
+      });
+
+      elements[i].append(button);
+    }
+
+    const data = this.breadcrumbData[i];
+
+    if (data) {
+
+      const text = domQuery('span.iteration', elements[i]);
+
+      const element = domify(`<span class="bjs-crumb iteration" style="margin-left: 8px;">
+                              <a>${data.description}</a>
+                              </span>`
+                            );
+
+      if (!text) elements[i].append(element);
+      else text.replaceWith(element);
+    }
+  }
 };
 
 MultiInstanceModule.prototype.hasIterationData = function (element) {
   return (this._widget.iterationData && this._widget.iterationData[element.id]);
+};
+
+MultiInstanceModule.prototype.setSubprocessData = function (element) {
+  const {id} = element;
+  
+  // retrieve data from widget by using <id>
+  this.subProcessData = this._widget.iterationData[id];
 };
 
 MultiInstanceModule.prototype.setWidget = function (widget) {
@@ -136,11 +193,9 @@ MultiInstanceModule.prototype.openDialog = function () {
   modal.style.display = 'flex';
 };
 
-MultiInstanceModule.prototype.loadTable = function (data) {
+MultiInstanceModule.prototype.loadTable = function (data, addOnClick) {
 
   const tbody = domQuery('#iteration-list tbody');
-
-  const addOnClick = is(this.currentElement, 'bpmn:SubProcess');
 
   tbody.replaceChildren(
     ...data.map((d) => {
@@ -169,28 +224,15 @@ MultiInstanceModule.prototype.loadTable = function (data) {
 
 MultiInstanceModule.prototype.openIterations = function (element) {
 
-  const {id} = element;
-  
-  const businessObject = getBusinessObject(element);
-  
-  const {name} = businessObject;
-  
-  // TODO retrieve data by using <id>
-  const subProcessData = this._widget.iterationData[id];
+  if (this.subProcessData) {
 
-  if (subProcessData) {
-
-    // set reference
-    this.currentElement = element;
-
-    // store for later
-    this._widget.subProcessData = subProcessData;
-
-    this.loadTable(subProcessData);
+    const addOnClick = is(element, 'bpmn:SubProcess');
+    
+    this.loadTable(this.subProcessData, addOnClick);
 
     // set title
     const title = domQuery('#iteration-title span');
-    title.textContent = name;
+    title.textContent = element.name;
 
     this.openDialog();
 
@@ -211,32 +253,48 @@ MultiInstanceModule.prototype.loadIteration = function (value) {
 
   if (value) {
 
-    const iterationData = this._widget.subProcessData.find(v => v.stepKey == value);
+    const iterationData = this.subProcessData.find(v => v.stepKey == value);
 
-    // TODO extract this out of sub process data using <value>
-    const highlightingData = iterationData.highlighting;
+    this.breadcrumbData[this.getLastBreadcrumbIndex()] = iterationData;
 
-    if (highlightingData) {
-      // set new diagram properties
-      // TODO probably need to set the currently selected instance as well
-      const {current, completed, error} = highlightingData;
+    this.updateBreadcrumb();
+    this.updateHighlighting();
 
-      this._widget.updateColors(current, completed, error);
+    // // TODO extract this out of sub process data using <value>
+    // const highlightingData = iterationData.highlighting;
 
-      // TODO update breadcrumb
-      const breadcrumb = domQuery('.bjs-breadcrumbs li:last-child'); // TODO fix selector for excluding call activity breadcrumb
+    // if (highlightingData) {
+    //   // set new diagram properties
+    //   // TODO probably need to set the currently selected instance as well
+    //   const {current, completed, error} = highlightingData;
 
-      const element = domify(`<span class="bjs-crumb iteration" style="margin-left: 8px;">
-        <a>${iterationData.description}</a>
-      </span>`);
+    //   this._widget.updateColors(current, completed, error);
 
-      if (breadcrumb.lastChild.classList.contains('iteration')) {
-        breadcrumb.lastChild.replaceWith(element);
-      } else {
-        breadcrumb.appendChild(element);
-      }
-    }
+    //   // TODO update breadcrumb
+    //   const breadcrumb = domQuery('.bjs-breadcrumbs'); // TODO fix selector for excluding call activity breadcrumb
+    //   const children = [...breadcrumb.children];
+
+    //   const element = domify(`<span class="bjs-crumb iteration" style="margin-left: 8px;">
+    //     <a>${iterationData.description}</a>
+    //   </span>`);
+      
+    //   this.breadcrumbData[children.length - 1].text = element;
+
+    //   this.updateBreadcrumb();
+    // }
   }
+};
+
+MultiInstanceModule.prototype.updateHighlighting = function () {
+
+  const iterationData = this.breadcrumbData[this.getLastBreadcrumbIndex()];
+
+  if (iterationData) {
+
+    const {current, completed, error} = iterationData.highlighting;
+
+    this._widget.updateColors(current, completed, error);
+  } else if (this._widget) this._widget.resetColors();
 };
 
 MultiInstanceModule.prototype.filterIterations = function (event) {

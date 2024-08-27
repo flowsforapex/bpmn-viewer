@@ -19,18 +19,18 @@ UserTaskModule.prototype.addOverlays = function () {
   const {userTaskData, iterationData} = this._widget;
   
   this._elementRegistry.filter(function (e) {
-    return is(e, 'bpmn:UserTask') && userTaskData[e.id] && !iterationData[e.id];
+    return is(e, 'bpmn:UserTask') && (userTaskData && userTaskData[e.id]) && (!iterationData || !iterationData[e.id]);
   }).forEach(function (el) {
     _this.addOverlay(el, userTaskData[el.id]);
   });
 };
 
-UserTaskModule.prototype.addOverlay = function (element, data) {
+UserTaskModule.prototype.addOverlay = function (element, url) {
 
   const button = domify('<button class="bjs-drilldown fa fa-external-link"></button>');
 
   button.addEventListener('click', function () {
-    window.open(data.url, data.target);
+    window.open(url, '_self');
   });
 
   // add overlay

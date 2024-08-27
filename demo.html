@@ -129,67 +129,75 @@
         _widget.error = [];
 
         _widget.iterationData = {
-          'Activity_1khhvsw': [
+          "Activity_A2": [
             {
-              "stepKey": "12345",
-              "loopCounter": 1,
-              "description": "Iteration 1: Research Department",
-              "status": "running",
+                "stepKey": "HzWFmaqGWC",
+                "loopCounter": 1,
+                "description": "Iteration A2 - iteration 1 (JONES)",
+                "iterationPath": "A2[1]",
+                "status": "running",
+                "highlighting": {
+                    "completed": ["Event_A2Start"],
+                    "current": ["Activity_A2a"]
+                }
             },
             {
-              "stepKey": "23456",
-              "loopCounter": 2,
-              "description": "Iteration 2: Human Resources",
-              "status": "completed",
+                "stepKey": "nzxcfwoPsq",
+                "loopCounter": 2,
+                "description": "Iteration A2 - iteration 2 (SCOTT)",
+                "iterationPath": "A2[2]",
+                "status": "running",
+                "highlighting": {
+                    "completed": ["Event_A2Start","Activity_A2a"],
+                    "current": ["Activity_A2b"]
+                }
+            },
+            {
+                "stepKey": "edFUfYXvyw",
+                "loopCounter": 3,
+                "description": "Iteration A2 - iteration 3 (FORD)",
+                "iterationPath": "A2[3]",
+                "status": "running",
+                "highlighting": {
+                    "completed": ["Event_A2Start"],
+                    "current": ["Activity_A2a"]
+                }
+            },
+            {
+                "stepKey": "sTtxLGXwia",
+                "loopCounter": 4,
+                "description": "Iteration A2 - iteration 4 (SMITH)",
+                "iterationPath": "A2[4]",
+                "status": "running",
+                "highlighting": {
+                    "completed": ["Event_A2Start"],
+                    "current": ["Activity_A2a"]
+                }
+            },
+            {
+                "stepKey": "sQOruNJpdv",
+                "loopCounter": 5,
+                "description": "Iteration A2 - iteration 5 (ADAMS)",
+                "iterationPath": "A2[5]",
+                "status": "running",
+                "highlighting": {
+                    "completed": ["Event_A2Start"],
+                    "current": ["Activity_A2a"]
+                }
             }
           ],
-          'Activity_1oy56wg': [
-            {
-              "stepKey": "abcde",
-              "loopCounter": 1,
-              "description": "Iteration 1: Employee SCOTT (Research Department)",
-              "status": "running",
-              "highlighting": {
-                "completed": ["Event_1on17fe"],
-                "current": ["Activity_0rqwz3p"]
+          "Activity_A2b": [
+              {
+                  "stepKey": "GCDKvCEvwm",
+                  "loopCounter": 1,
+                  "description": "Sub Iteration A2b - iteration 1 (BLAKE)",
+                  "iterationPath": "A2[2]:A2b[1]",
+                  "status": "running",
+                  "highlighting": {
+                      "completed": ["Event_A2bStart"],
+                      "current": ["Activity_A2b1"]
+                  }
               }
-            },
-            {
-              "stepKey": "fghij",
-              "loopCounter": 2,
-              "description": "Iteration 2: Employee MILLER (Human Resources)",
-              "status": "running",
-              "highlighting": {
-                "completed": ["Event_1on17fe","Activity_0rqwz3p","Activity_0hkku17"],
-                "current": ["Activity_15ttml3"]
-              }
-            },
-            {
-              "stepKey": "klmno",
-              "loopCounter": 3,
-              "description": "Iteration 3: Employee GRANT (Board)",
-              "status": "error",
-              "highlighting": {
-                "completed": ["Event_1on17fe"],
-                "error": ["Activity_0rqwz3p"]
-              }
-            },
-            {
-              "stepKey": "pqrst",
-              "loopCounter": 4,
-              "description": "Iteration 4: Employee SMITH (Research Department)",
-              "status": "completed",
-              "highlighting": {
-                "completed": ["Event_1on17fe","Activity_0rqwz3p","Activity_0hkku17","Activity_15ttml3","Event_0obsa93"],
-              }
-            },
-            {
-              "stepKey": null,
-              "loopCounter": 5,
-              "description": "Iteration 5: Employee MAYER (Board)",
-              "status": "notStarted",
-              "highlighting": {}
-            }
           ]
         };
 
@@ -239,7 +247,7 @@
             const element = event.element;
 
             if (multiInstanceModule.isMultiInstanceSubProcess(element)) {
-              _widget.resetColors();
+              // _widget.resetColors(); // TODO check
             }
             else {
               _widget.updateColors(_widget.current, _widget.completed, _widget.error);
@@ -255,7 +263,8 @@
     }
 
     async function init() {
-      fetch("/assets/diagrams/SubProcessColors.bpmn")
+      // fetch("/assets/diagrams/SubProcessColors.bpmn")
+      fetch("/assets/diagrams/A25i - Nested Parallel SubProcess Iterations.bpmn")
       .then(data => {
         data.text()
         .then(result => {

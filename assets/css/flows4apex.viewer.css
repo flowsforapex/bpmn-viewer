@@ -241,3 +241,10 @@
 .bjs-crumb + .bjs-drilldown {
   margin-left: 8px;
 }
+.bjs-breadcrumbs li:not(:last-child) button.bjs-drilldown {
+  background-color: transparent;
+  color: var(--breadcrumbs-item-color);
+}
+.bjs-breadcrumbs .bjs-crumb {
+  max-width: 400px !important;
+}
