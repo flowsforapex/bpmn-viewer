@@ -6,8 +6,6 @@ import { domify, query as domQuery } from 'min-dom';
 export default function MultiInstanceModule(
   canvas, eventBus, elementRegistry, translate, overlays
 ) {
-  var _self = this;
-  
   this._canvas = canvas;
   this._eventBus = eventBus;
   this._elementRegistry = elementRegistry;
@@ -45,59 +43,64 @@ export default function MultiInstanceModule(
   // append content
   canvas.getContainer().appendChild(modal);
 
-  eventBus.on('import.render.complete', function () {
+  eventBus.on('import.render.complete', () => {
     // add search listener for filtering
     const searchbar = domQuery('#iteration-search input');
-    searchbar.addEventListener('keyup', function (event) {
-      _self.filterIterations(event);
+    searchbar.addEventListener('keyup', (event) => {
+      this.filterIterations(event);
     });
     // add close listener
     const closeButton = domQuery('#iteration-title button.fa-times');
-    closeButton.addEventListener('click', function (event) {
-      _self.closeIterations();
+    closeButton.addEventListener('click', (event) => {
+      this.closeIterations();
     });
   });
 
   // when diagram root changes
-  eventBus.on('root.set', function (event) {
+  eventBus.on('root.set', (event) => {
+    const {element} = event;
 
-    const element = getBusinessObject(event.element);
-
+    // reset breadcrumb data (null all entries above the current)
+    this.resetBreadcrumbData();
+    
     // if drilled down into subprocess
-    if (is(element, 'bpmn:SubProcess') && _self.hasIterationData(element)) {
-      _self.setSubprocessData(element);
-      _self.updateBreadcrumb(element);
+    if (is(element, 'bpmn:SubProcess')) {
+      // update breadcrumb: add button (if last element)
+      this.updateBreadcrumbButton(element);
+      // update breadcrumb: add/update iteration text (from breadcrumbData)
+      this.updateBreadcrumbText();
     }
 
-    _self.resetBreadcrumbData();
-    _self.updateHighlighting();
+    // update highlighting (from current iteration)
+    this.updateHighlighting();
   });
 }
 
 MultiInstanceModule.prototype.addOverlays = function () {
-  
-  const _this = this;
-  
-  this._elementRegistry.filter(function (e) {
-    return !(is(e, 'bpmn:SubProcess')) && _this.hasIterationData(e);
-  }).forEach(function (el) {
-    _this.addOverlay(el);
+  this._elementRegistry
+  // id element is no subprocess and has iteration data
+  .filter(element => !(is(element, 'bpmn:SubProcess')) && this.hasIterationData(element))
+  .forEach((element) => {
+    this.addOverlay(element);
   });
 };
 
+/**
+ * Called from outside (widget)
+ * @param {element} element 
+ * @returns true if element is subprocess and has iteration data
+ */
 MultiInstanceModule.prototype.isMultiInstanceSubProcess = function (element) {
   const businessObject = getBusinessObject(element);
-  return is(businessObject, 'bpmn:SubProcess') && this.hasIterationData(businessObject);
+  return is(element, 'bpmn:SubProcess') && this.hasIterationData(businessObject);
 };
 
 MultiInstanceModule.prototype.addOverlay = function (element) {
 
   const button = domify('<button class="bjs-drilldown fa fa-list"></button>');
 
-  const _this = this;
-
-  button.addEventListener('click', function (event) {
-    _this.openIterations(element);
+  button.addEventListener('click', (event) => {
+    this.openIterations(element);
   });
 
   // add overlay
@@ -129,53 +132,54 @@ MultiInstanceModule.prototype.resetBreadcrumbData = function () {
   }
 };
 
-MultiInstanceModule.prototype.updateBreadcrumb = function (element) {
+MultiInstanceModule.prototype.updateBreadcrumbButton = function (element) {
 
   const elements = this.getBreadcrumbElements();
 
-  const _this = this;
-
   for (let i = 0; i < elements.length; i++) {
 
-    // if last breadcrumb entry
-    if (i === elements.length - 1 && !domQuery('button.bjs-drilldown', elements[i])) {
+    // if last breadcrumb entry & button not yet existing
+    if (this.hasIterationData(element) && i === elements.length - 1 && !domQuery('button.bjs-drilldown', elements[i])) {
       // create button
       const button = domify('<button class="bjs-drilldown fa fa-list"></button>');
       // add event listener
-      button.addEventListener('click', function (event) {
+      button.addEventListener('click', (event) => {
         // open iterations for this element
-        _this.openIterations(element);
+        this.openIterations(element);
       });
 
       elements[i].append(button);
     }
+  }
+};
+
+MultiInstanceModule.prototype.updateBreadcrumbText = function () {
+
+  const elements = this.getBreadcrumbElements();
+
+  for (let i = 0; i < elements.length; i++) {
 
     const data = this.breadcrumbData[i];
 
+    // if current breadcrumb entry has data
     if (data) {
 
       const text = domQuery('span.iteration', elements[i]);
 
-      const element = domify(`<span class="bjs-crumb iteration" style="margin-left: 8px;">
+      const span = domify(`<span class="bjs-crumb iteration" style="margin-left: 8px;">
                               <a>${data.description}</a>
                               </span>`
                             );
 
-      if (!text) elements[i].append(element);
-      else text.replaceWith(element);
+      // append span or replace text if existing
+      if (!text) elements[i].append(span);
+      else text.replaceWith(span);
     }
   }
 };
 
 MultiInstanceModule.prototype.hasIterationData = function (element) {
-  return (this._widget.iterationData && this._widget.iterationData[element.id]);
-};
-
-MultiInstanceModule.prototype.setSubprocessData = function (element) {
-  const {id} = element;
-  
-  // retrieve data from widget by using <id>
-  this.subProcessData = this._widget.iterationData[id];
+  return this.getIterationData(element).length > 0;
 };
 
 MultiInstanceModule.prototype.setWidget = function (widget) {
@@ -193,12 +197,12 @@ MultiInstanceModule.prototype.openDialog = function () {
   modal.style.display = 'flex';
 };
 
-MultiInstanceModule.prototype.loadTable = function (data, addOnClick) {
+MultiInstanceModule.prototype.loadTable = function (addOnClick) {
 
   const tbody = domQuery('#iteration-list tbody');
 
   tbody.replaceChildren(
-    ...data.map((d) => {
+    ...this.dialogData.map((d) => {
       const row = domify(`
         <tr ${addOnClick ? 'class="clickable"' : ''}>
           <td>${d.loopCounter}</td>
@@ -207,12 +211,10 @@ MultiInstanceModule.prototype.loadTable = function (data, addOnClick) {
         </tr>
       `);
 
-      const _this = this;
-
       if (addOnClick) {
-        row.addEventListener('click', function (event) {
-          _this.loadIteration(d.stepKey);
-          _this.closeIterations();
+        row.addEventListener('click', (event) => {
+          this.loadIteration(d.stepKey);
+          this.closeIterations();
         });
       }
 
@@ -222,24 +224,37 @@ MultiInstanceModule.prototype.loadTable = function (data, addOnClick) {
   
 };
 
+MultiInstanceModule.prototype.getIterationData = function (element) {
+  
+  const {id} = getBusinessObject(element);
+
+  const parentIteration = this.breadcrumbData[this.getLastBreadcrumbIndex() - 1];
+
+  // retrieve data from widget by using <id>
+  return (this._widget.iterationData &&
+         this._widget.iterationData[id] &&
+         this._widget.iterationData[id].filter(i => (!parentIteration && !i.parentStepKey) || (parentIteration && i.parentStepKey == parentIteration.stepKey))) || [];
+};
+
 MultiInstanceModule.prototype.openIterations = function (element) {
 
-  if (this.subProcessData) {
+  this.dialogData = this.getIterationData(element);
+
+  if (this.dialogData) {
 
     const addOnClick = is(element, 'bpmn:SubProcess');
     
-    this.loadTable(this.subProcessData, addOnClick);
+    this.loadTable(addOnClick);
 
     // set title
     const title = domQuery('#iteration-title span');
-    title.textContent = element.name;
+    title.textContent = getBusinessObject(element).name;
 
     this.openDialog();
 
   } else {
     // TODO do anything here?
   }
-
 };
 
 MultiInstanceModule.prototype.closeIterations = function () {
@@ -253,45 +268,22 @@ MultiInstanceModule.prototype.loadIteration = function (value) {
 
   if (value) {
 
-    const iterationData = this.subProcessData.find(v => v.stepKey == value);
+    const selectedIteration = this.dialogData.find(v => v.stepKey == value);
 
-    this.breadcrumbData[this.getLastBreadcrumbIndex()] = iterationData;
+    this.breadcrumbData[this.getLastBreadcrumbIndex()] = selectedIteration;
 
-    this.updateBreadcrumb();
+    this.updateBreadcrumbText();
     this.updateHighlighting();
-
-    // // TODO extract this out of sub process data using <value>
-    // const highlightingData = iterationData.highlighting;
-
-    // if (highlightingData) {
-    //   // set new diagram properties
-    //   // TODO probably need to set the currently selected instance as well
-    //   const {current, completed, error} = highlightingData;
-
-    //   this._widget.updateColors(current, completed, error);
-
-    //   // TODO update breadcrumb
-    //   const breadcrumb = domQuery('.bjs-breadcrumbs'); // TODO fix selector for excluding call activity breadcrumb
-    //   const children = [...breadcrumb.children];
-
-    //   const element = domify(`<span class="bjs-crumb iteration" style="margin-left: 8px;">
-    //     <a>${iterationData.description}</a>
-    //   </span>`);
-      
-    //   this.breadcrumbData[children.length - 1].text = element;
-
-    //   this.updateBreadcrumb();
-    // }
   }
 };
 
 MultiInstanceModule.prototype.updateHighlighting = function () {
 
-  const iterationData = this.breadcrumbData[this.getLastBreadcrumbIndex()];
+  const currentIteration = this.breadcrumbData[this.getLastBreadcrumbIndex()];
 
-  if (iterationData) {
+  if (currentIteration) {
 
-    const {current, completed, error} = iterationData.highlighting;
+    const {current, completed, error} = currentIteration.highlighting;
 
     this._widget.updateColors(current, completed, error);
   } else if (this._widget) this._widget.resetColors();
@@ -301,9 +293,9 @@ MultiInstanceModule.prototype.filterIterations = function (event) {
 
   const {value} = event.target;
 
-  const filtered = this._widget.subProcessData.filter(
+  const filtered = this.dialogData.filter(
     d => d.description.includes(value) || d.status.includes(value)
-  ); // TODO make other columns searchable as well
+  );
 
   this.loadTable(filtered);
 };

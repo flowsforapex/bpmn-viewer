@@ -128,13 +128,43 @@
         _widget.completed = ["Activity_1khhvsw","Event_18rof3p"];
         _widget.error = [];
 
+        // _widget.iterationData = {
+        //   "Activity_1khhvsw": [
+        //       {
+        //           "stepKey": "12345",
+        //           "loopCounter": 1,
+        //           "description": "Iteration 1",
+        //           "parentStepKey": null,
+        //           "status": "running",
+        //       }
+        //   ],
+        //   "Activity_1oy56wg": [
+        //     {
+        //       "stepKey": "12345",
+        //       "loopCounter": 1,
+        //       "description": "Iteration 1",
+        //       "parentStepKey": null,
+        //       "status": "running",
+        //       "highlighting": {}
+        //     },
+        //     {
+        //       "stepKey": "23456",
+        //       "loopCounter": 2,
+        //       "description": "Iteration 2",
+        //       "parentStepKey": null,
+        //       "status": "running",
+        //       "highlighting": {}
+        //     }
+        //   ]
+        // }
+
         _widget.iterationData = {
           "Activity_A2": [
             {
                 "stepKey": "HzWFmaqGWC",
                 "loopCounter": 1,
                 "description": "Iteration A2 - iteration 1 (JONES)",
-                "iterationPath": "A2[1]",
+                "parentStepKey": null,
                 "status": "running",
                 "highlighting": {
                     "completed": ["Event_A2Start"],
@@ -145,7 +175,7 @@
                 "stepKey": "nzxcfwoPsq",
                 "loopCounter": 2,
                 "description": "Iteration A2 - iteration 2 (SCOTT)",
-                "iterationPath": "A2[2]",
+                "parentStepKey": null,
                 "status": "running",
                 "highlighting": {
                     "completed": ["Event_A2Start","Activity_A2a"],
@@ -156,7 +186,7 @@
                 "stepKey": "edFUfYXvyw",
                 "loopCounter": 3,
                 "description": "Iteration A2 - iteration 3 (FORD)",
-                "iterationPath": "A2[3]",
+                "parentStepKey": null,
                 "status": "running",
                 "highlighting": {
                     "completed": ["Event_A2Start"],
@@ -167,7 +197,7 @@
                 "stepKey": "sTtxLGXwia",
                 "loopCounter": 4,
                 "description": "Iteration A2 - iteration 4 (SMITH)",
-                "iterationPath": "A2[4]",
+                "parentStepKey": null,
                 "status": "running",
                 "highlighting": {
                     "completed": ["Event_A2Start"],
@@ -178,7 +208,7 @@
                 "stepKey": "sQOruNJpdv",
                 "loopCounter": 5,
                 "description": "Iteration A2 - iteration 5 (ADAMS)",
-                "iterationPath": "A2[5]",
+                "parentStepKey": null,
                 "status": "running",
                 "highlighting": {
                     "completed": ["Event_A2Start"],
@@ -191,7 +221,7 @@
                   "stepKey": "GCDKvCEvwm",
                   "loopCounter": 1,
                   "description": "Sub Iteration A2b - iteration 1 (BLAKE)",
-                  "iterationPath": "A2[2]:A2b[1]",
+                  "parentStepKey": "nzxcfwoPsq",
                   "status": "running",
                   "highlighting": {
                       "completed": ["Event_A2bStart"],
@@ -203,35 +233,10 @@
 
         myBpmnViewer.get('multiInstanceModule').addOverlays();
 
-        _widget.contextMenuData = { // TODO add overlay/icon to inform that link is available here?
-          "Activity_1khhvsw": [
-            {
-              type: "link",
-              url: "https://github.com/mt-ag/bpmn-modeler",
-              label: "Open Simple Form",
-              target: "_blank"
-            }
-          ],
-          "Activity_1cro1hb": [
-            {
-              type: "link",
-              url: "https://github.com/mt-ag/bpmn-viewer",
-              label: "Open Simple Form",
-              target: "_blank"
-            }
-          ]
-        };
-
-        _widget.userTaskData = {
-          "Activity_1khhvsw": {
-            url: "https://github.com/mt-ag/bpmn-modeler",
-            target: "_blank",
-          },
-          "Activity_1cro1hb": {
-            url: "https://github.com/mt-ag/bpmn-viewer",
-            target: "_self",
-          },
-        };
+        // _widget.userTaskData = {
+        //   "Activity_1khhvsw": "https://github.com/mt-ag/bpmn-modeler",
+        //   "Activity_1cro1hb": "https://github.com/mt-ag/bpmn-viewer",
+        // };
 
         myBpmnViewer.get('userTaskModule').addOverlays();
 
@@ -244,7 +249,7 @@
           _widget.updateColors(_widget.current, _widget.completed, _widget.error);
 
           eventBus.on('root.set', (event) => {
-            const element = event.element;
+            const {element} = event;
 
             if (multiInstanceModule.isMultiInstanceSubProcess(element)) {
               // _widget.resetColors(); // TODO check
