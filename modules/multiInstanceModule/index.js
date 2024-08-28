@@ -1,4 +1,4 @@
-import MultiInstanceModule from './MultiInstanceModule';
+import { MultiInstanceModule } from './MultiInstanceModule';
 
 export default {
   __init__: ['multiInstanceModule'],
