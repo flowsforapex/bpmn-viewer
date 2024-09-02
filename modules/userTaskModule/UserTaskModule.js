@@ -1,5 +1,5 @@
 
-import { is } from 'bpmn-js/lib/util/ModelUtil';
+import { getBusinessObject, is } from 'bpmn-js/lib/util/ModelUtil';
 import { domify } from 'min-dom';
 
 export default function UserTaskModule(
@@ -16,10 +16,17 @@ UserTaskModule.prototype.addOverlays = function () {
 
   const _this = this;
 
-  const {userTaskData, iterationData} = this._widget;
+  const {userTaskData} = this._widget;
   
   this._elementRegistry.filter(function (e) {
-    return is(e, 'bpmn:UserTask') && (userTaskData && userTaskData[e.id]) && (!iterationData || !iterationData[e.id]);
+    const bo = getBusinessObject(e);
+    /* only show link button if
+     * - element is userTask
+     * - link is existing
+     * - element is not iterating
+     * - parent is not iterating
+     */
+    return is(e, 'bpmn:UserTask') && (userTaskData && userTaskData[e.id]) && !bo.loopCharacteristics && !bo.$parent.loopCharacteristics;
   }).forEach(function (el) {
     _this.addOverlay(el, userTaskData[el.id]);
   });
