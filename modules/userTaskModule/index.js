@@ -1,4 +1,4 @@
-import UserTaskModule from './UserTaskModule';
+import { UserTaskModule } from './UserTaskModule';
 
 export default {
   __init__: ['userTaskModule'],

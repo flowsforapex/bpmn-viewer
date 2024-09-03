@@ -82,13 +82,16 @@ export class MultiInstanceModule {
     this._widget = widget;
   }
 
+  /* Helper */
+
   getIterationData(element) {
 
     const { id } = getBusinessObject(element);
 
+    // get parent iteration from breadcrumb
     const parentIteration = this.breadcrumbData[this.getLastBreadcrumbIndex() - 1];
 
-    // retrieve data from widget by using <id>
+    // retrieve data from widget by using id and stepKey
     return (this._widget.iterationData &&
       this._widget.iterationData[id] &&
       this._widget.iterationData[id].filter(
@@ -111,7 +114,8 @@ export class MultiInstanceModule {
 
     const button = domify('<button class="bjs-drilldown fa fa-list"></button>');
 
-    button.addEventListener('click', (event) => {
+    // add onclick listener
+    button.addEventListener('click', (_) => {
       this.openIterations(element);
     });
 
@@ -138,7 +142,6 @@ export class MultiInstanceModule {
 
   /* Breadcrumb */
 
-  // eslint-disable-next-line class-methods-use-this
   getBreadcrumbElements() {
     const breadcrumb = domQuery('.bjs-breadcrumbs'); // TODO fix selector for excluding call activity breadcrumb
     return [...breadcrumb.children];
@@ -205,7 +208,6 @@ export class MultiInstanceModule {
 
   /* dialog */
 
-  // eslint-disable-next-line class-methods-use-this
   openDialog() {
 
     const searchbar = domQuery('#iteration-search input');
@@ -221,6 +223,7 @@ export class MultiInstanceModule {
 
     const tbody = domQuery('#iteration-list tbody');
 
+    // build table body
     tbody.replaceChildren(
       ...(data || this.dialogData).map((d) => {
         const row = domify(`
@@ -231,8 +234,9 @@ export class MultiInstanceModule {
         </tr>
       `);
 
+        // add onclick listener if rows are clickable (sub processes)
         if (this.dialogClickable) {
-          row.addEventListener('click', (event) => {
+          row.addEventListener('click', (_) => {
             this.loadIteration(d.stepKey);
             this.closeIterations();
           });
@@ -244,6 +248,7 @@ export class MultiInstanceModule {
 
   openIterations(element) {
 
+    // store data and clickable info for later
     this.dialogData = this.getIterationData(element);
     this.dialogClickable = is(element, 'bpmn:SubProcess');
 
@@ -256,13 +261,9 @@ export class MultiInstanceModule {
       title.textContent = getBusinessObject(element).name;
 
       this.openDialog();
-
-    } else {
-      // TODO do anything here?
     }
   }
 
-  // eslint-disable-next-line class-methods-use-this
   closeIterations() {
 
     const modal = domQuery('#modal');
@@ -298,14 +299,17 @@ export class MultiInstanceModule {
   
   updateHighlighting() {
 
-    const currentIteration = this.breadcrumbData[this.getLastBreadcrumbIndex()];
+    if (this._widget) {
 
-    if (currentIteration) {
+      const currentIteration = this.breadcrumbData[this.getLastBreadcrumbIndex()];
 
-      const { current, completed, error } = currentIteration.highlighting;
-
-      this._widget.updateColors(current, completed, error);
-    } else if (this._widget) this._widget.resetColors();
+      if (currentIteration) {
+        const { current, completed, error } = currentIteration.highlighting;
+        this._widget.updateColors(current, completed, error);
+      } else {
+        this._widget.resetColors();
+      }
+    }
   }
 }
 
