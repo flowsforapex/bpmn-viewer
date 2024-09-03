@@ -74,6 +74,7 @@
         }
       }
       this.resetColors = function() {
+        
         const config = myBpmnViewer.get('config').config;
         const styleModule = myBpmnViewer.get('styleModule');
 
@@ -120,12 +121,11 @@
 
         myBpmnViewer.get('callActivityModule').setWidget(_widget);
         myBpmnViewer.get('multiInstanceModule').setWidget(_widget);
-        // myBpmnViewer.get('rightClickModule').setWidget(_widget);
         myBpmnViewer.get('userTaskModule').setWidget(_widget);
 
         /* DEMO DATA - must be attached to widget */
-        _widget.current = ["Activity_1oy56wg"];
-        _widget.completed = ["Activity_1khhvsw","Event_18rof3p"];
+        _widget.current = ["Activity_A2"];
+        _widget.completed = ["Event_Start","Activity_PreSplit","Activity_A1"];
         _widget.error = [];
 
         // _widget.iterationData = {
@@ -228,20 +228,38 @@
                       "current": ["Activity_A2b1"]
                   }
               }
+          ],
+          "Activity_A3": [
+            {
+              "stepKey": "12345",
+              "loopCounter": 1,
+              "description": "Iteration 1",
+              "parentStepKey": null,
+              "status": "running",
+              "highlighting": {}
+            },
+            {
+              "stepKey": "23456",
+              "loopCounter": 2,
+              "description": "Iteration 2",
+              "parentStepKey": null,
+              "status": "running",
+              "highlighting": {}
+            }
           ]
         };
 
         myBpmnViewer.get('multiInstanceModule').addOverlays();
 
-        // _widget.userTaskData = {
-        //   "Activity_1khhvsw": "https://github.com/mt-ag/bpmn-modeler",
-        //   "Activity_1cro1hb": "https://github.com/mt-ag/bpmn-viewer",
-        // };
+        _widget.userTaskData = {
+          "Activity_A2a": "https://github.com/mt-ag/bpmn-viewer",
+          "Activity_A3": "https://github.com/mt-ag/bpmn-viewer",
+        };
 
         myBpmnViewer.get('userTaskModule').addOverlays();
 
         if ( myBpmnViewer.get('config').config.addHighlighting || myBpmnViewer.get('config').config.useBPMNcolors ) {
-          const config = myBpmnViewer.get('config').config;
+          
           const eventBus = myBpmnViewer.get('eventBus');
           const multiInstanceModule = myBpmnViewer.get('multiInstanceModule');
           const styleModule = myBpmnViewer.get('styleModule');
@@ -251,10 +269,7 @@
           eventBus.on('root.set', (event) => {
             const {element} = event;
 
-            if (multiInstanceModule.isMultiInstanceSubProcess(element)) {
-              // _widget.resetColors(); // TODO check
-            }
-            else {
+            if (!multiInstanceModule.isMultiInstanceSubProcess(element)) {
               _widget.updateColors(_widget.current, _widget.completed, _widget.error);
             }
           });

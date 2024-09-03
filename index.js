@@ -7,7 +7,6 @@ import callActivityModule from './modules/callActivityModule';
 import drilldownCentering from './modules/drilldownCentering';
 import styleModule from './modules/styleModule';
 import multiInstanceModule from './modules/multiInstanceModule';
-import rightClickModule from './modules/rightClickModule';
 import userTaskModule from './modules/userTaskModule/';
 
 var bpmnViewer = {
@@ -20,7 +19,6 @@ var bpmnViewer = {
     multiInstanceModule,
     styleModule,
     customPaletteProviderModule,
-    // rightClickModule,
     userTaskModule
   },
 };

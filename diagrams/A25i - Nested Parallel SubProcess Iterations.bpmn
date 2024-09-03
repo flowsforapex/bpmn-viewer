@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:apex="https://flowsforapex.org" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_1wzb475" targetNamespace="http://bpmn.io/schema/b" exporter="Flows for APEX" exporterVersion="24.1.0">
+<bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:apex="https://flowsforapex.org" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" xmlns:color="http://www.omg.org/spec/BPMN/non-normative/color/1.0" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_1wzb475" targetNamespace="http://bpmn.io/schema/b" exporter="Flows for APEX" exporterVersion="24.1.0">
   <bpmn:process id="Process_A25e" name="A25e - Parallel Iterations with SubProcesses" isExecutable="true" apex:manualInput="false">
     <bpmn:startEvent id="Event_Start" name="Start">
       <bpmn:outgoing>Flow_00jstgp</bpmn:outgoing>
@@ -29,10 +29,12 @@ where deptno = 20</apex:varExpression>
     </bpmn:task>
     <bpmn:sequenceFlow id="Flow_1ngmguv" sourceRef="Gateway_Split" targetRef="Activity_A1" apex:sequence="10" />
     <bpmn:sequenceFlow id="Flow_0xh1wjg" sourceRef="Activity_A1" targetRef="Activity_A2" />
-    <bpmn:task id="Activity_A3" name="A3">
+    <bpmn:userTask id="Activity_A3" name="A3">
+      <bpmn:multiInstanceLoopCharacteristics isSequential="false">
+      </bpmn:multiInstanceLoopCharacteristics>
       <bpmn:incoming>Flow_1v6vync</bpmn:incoming>
       <bpmn:outgoing>Flow_0emop6i</bpmn:outgoing>
-    </bpmn:task>
+    </bpmn:userTask>
     <bpmn:sequenceFlow id="Flow_1v6vync" sourceRef="Activity_A2" targetRef="Activity_A3" />
     <bpmn:endEvent id="Event_AEnd" name="AEnd">
       <bpmn:incoming>Flow_0emop6i</bpmn:incoming>
@@ -135,7 +137,7 @@ where deptno = 20</apex:expression>
       <bpmn:startEvent id="Event_A2Start" name="A2 Start">
         <bpmn:outgoing>Flow_0xcd6m0</bpmn:outgoing>
       </bpmn:startEvent>
-      <bpmn:task id="Activity_A2a" name="A2a">
+      <bpmn:userTask id="Activity_A2a" name="A2a">
         <bpmn:extensionElements>
           <apex:beforeTask>
             <apex:processVariable>
@@ -151,7 +153,7 @@ where deptno = 30</apex:varExpression>
         </bpmn:extensionElements>
         <bpmn:incoming>Flow_0xcd6m0</bpmn:incoming>
         <bpmn:outgoing>Flow_1alq874</bpmn:outgoing>
-      </bpmn:task>
+      </bpmn:userTask>
       <bpmn:sequenceFlow id="Flow_0xcd6m0" sourceRef="Event_A2Start" targetRef="Activity_A2a" />
       <bpmn:sequenceFlow id="Flow_1alq874" sourceRef="Activity_A2a" targetRef="Activity_A2b" />
       <bpmn:endEvent id="Event_A2End" name="A2 End">
@@ -323,7 +325,7 @@ where dept no = 20</bpmn:text>
         <dc:Bounds x="600" y="320" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_12yruu2" bpmnElement="Activity_B3">
+      <bpmndi:BPMNShape id="BPMNShape_12yruu2" bpmnElement="Activity_B3" bioc:stroke="#831311" bioc:fill="#ffcdd2" color:background-color="#ffcdd2" color:border-color="#831311">
         <dc:Bounds x="920" y="320" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
@@ -481,7 +483,7 @@ where dept no = 20</bpmn:text>
           <dc:Bounds x="32" y="-125" width="37" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1miaqnq_di" bpmnElement="Activity_A2c">
+      <bpmndi:BPMNShape id="Activity_1miaqnq_di" bpmnElement="Activity_A2c" bioc:stroke="#831311" bioc:fill="#ffcdd2" color:background-color="#ffcdd2" color:border-color="#831311">
         <dc:Bounds x="-110" y="-190" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
