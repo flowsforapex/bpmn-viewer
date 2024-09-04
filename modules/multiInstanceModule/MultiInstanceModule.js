@@ -12,7 +12,8 @@ export class MultiInstanceModule {
     this._translate = translate;
     this._overlays = overlays;
 
-    this.breadcrumbData = [];
+    this.breadcrumbIteration = [];
+    this.breadcrumbSelection = [];
 
     const modal = domify(`
       <div id="modal">
@@ -65,10 +66,13 @@ export class MultiInstanceModule {
 
       // if drilled down into subprocess
       if (is(element, 'bpmn:SubProcess')) {
-        // update breadcrumb: add button (if last element)
-        this.updateBreadcrumbButton(element);
-        // update breadcrumb: add/update iteration text (from breadcrumbData)
-        this.updateBreadcrumbText();
+        if (this.hasIterationData(element)) {
+          // update breadcrumb data: mark current entry as iterating
+          this.breadcrumbIteration[this.getLastBreadcrumbIndex()] = true;
+          // update breadcrumb: add button (if last element)
+          this.appendBreadcrumbButton(element);
+        }
+        this.updateBreadcrumb();
       }
 
       // update highlighting (from current iteration)
@@ -89,13 +93,13 @@ export class MultiInstanceModule {
     const { id } = getBusinessObject(element);
 
     // get parent iteration from breadcrumb
-    const parentIteration = this.breadcrumbData[this.getLastBreadcrumbIndex() - 1];
+    const parentIteration = this.breadcrumbSelection[this.getLastBreadcrumbIndex() - 1];
 
     // retrieve data from widget by using id and stepKey
     return (this._widget.iterationData &&
       this._widget.iterationData[id] &&
       this._widget.iterationData[id].filter(
-        i => (!parentIteration && !i.parentStepKey) || (parentIteration && i.parentStepKey == parentIteration.stepKey)
+        i => ((!parentIteration && !i.parentStepKey) || (parentIteration && i.parentStepKey == parentIteration.stepKey))
       )) || [];
   }
 
@@ -133,7 +137,7 @@ export class MultiInstanceModule {
 
   isMultiInstanceSubProcess(element) {
     const businessObject = getBusinessObject(element);
-    return is(element, 'bpmn:SubProcess') && this.hasIterationData(businessObject);
+    return is(element, 'bpmn:SubProcess') && businessObject.loopCharacteristics;
   }
 
   hasIterationData(element) {
@@ -155,53 +159,60 @@ export class MultiInstanceModule {
   resetBreadcrumbData() {
     const lastIndex = this.getLastBreadcrumbIndex();
 
-    for (let i = this.breadcrumbData.length - 1; i > lastIndex; i--) {
-      this.breadcrumbData[i] = null;
+    this.breadcrumbIteration.splice(lastIndex + 1);
+    this.breadcrumbSelection.splice(lastIndex + 1);
+  }
+
+  appendBreadcrumbButton(element) {
+
+    const lastElement = this.getBreadcrumbElements().pop();
+
+    // if element existing (might be null on diagram load)
+    if (lastElement) {
+      // create button
+      const button = domify('<button class="bjs-drilldown fa fa-list"></button>');
+      // add event listener
+      button.addEventListener('click', (_) => {
+        // open iterations for this element
+        this.openIterations(element);
+      });
+
+      lastElement.append(button);
     }
   }
 
-  updateBreadcrumbButton(element) {
+  updateBreadcrumb() {
 
     const elements = this.getBreadcrumbElements();
 
     for (let i = 0; i < elements.length; i++) {
 
-      // if last breadcrumb entry & button not yet existing
-      if (this.hasIterationData(element) && i === elements.length - 1 && !domQuery('button.bjs-drilldown', elements[i])) {
-        // create button
-        const button = domify('<button class="bjs-drilldown fa fa-list"></button>');
-        // add event listener
-        button.addEventListener('click', (event) => {
-          // open iterations for this element
-          this.openIterations(element);
-        });
+      const data = this.breadcrumbIteration[i];
 
-        elements[i].append(button);
+      // if current breadcrumb entry has iteration data & is not last element
+      if (data && i < elements.length - 1) {
+
+        const existing = domQuery('span.iteration-button', elements[i]);
+
+        const span = domify('<span class="bjs-crumb iteration-button fa fa-list"></span>');
+        
+        // append span or replace text if existing
+        if (!existing) elements[i].append(span);
+        else existing.replaceWith(span);
       }
-    }
-  }
 
-  updateBreadcrumbText() {
+      const selected = this.breadcrumbSelection[i];
 
-    const elements = this.getBreadcrumbElements();
+      // if current breadcrumb entry has selected iteration
+      if (selected) {
 
-    for (let i = 0; i < elements.length; i++) {
+        const existing = domQuery('span.iteration-desc', elements[i]);
 
-      const data = this.breadcrumbData[i];
-
-      // if current breadcrumb entry has data
-      if (data) {
-
-        const text = domQuery('span.iteration', elements[i]);
-
-        const span = domify(`<span class="bjs-crumb iteration" style="margin-left: 8px;">
-                              <a>${data.description}</a>
-                              </span>`
-        );
+        const span = domify(`<span class="bjs-crumb iteration-desc">${selected.description}</span>`);
 
         // append span or replace text if existing
-        if (!text) elements[i].append(span);
-        else text.replaceWith(span);
+        if (!existing) elements[i].append(span);
+        else existing.replaceWith(span);
       }
     }
   }
@@ -237,7 +248,7 @@ export class MultiInstanceModule {
         // add onclick listener if rows are clickable (sub processes)
         if (this.dialogClickable) {
           row.addEventListener('click', (_) => {
-            this.loadIteration(d.stepKey);
+            this.loadIteration(d.loopCounter);
             this.closeIterations();
           });
         }
@@ -271,17 +282,14 @@ export class MultiInstanceModule {
     modal.style.display = 'none';
   }
 
-  loadIteration(value) {
+  loadIteration(loopCounter) {
 
-    if (value) {
+    const selectedIteration = this.dialogData.find(v => v.loopCounter == loopCounter);
 
-      const selectedIteration = this.dialogData.find(v => v.stepKey == value);
+    this.breadcrumbSelection[this.getLastBreadcrumbIndex()] = selectedIteration;
 
-      this.breadcrumbData[this.getLastBreadcrumbIndex()] = selectedIteration;
-
-      this.updateBreadcrumbText();
-      this.updateHighlighting();
-    }
+    this.updateBreadcrumb();
+    this.updateHighlighting();
   }
 
   filterIterations(event) {
@@ -301,7 +309,7 @@ export class MultiInstanceModule {
 
     if (this._widget) {
 
-      const currentIteration = this.breadcrumbData[this.getLastBreadcrumbIndex()];
+      const currentIteration = this.breadcrumbSelection[this.getLastBreadcrumbIndex()];
 
       if (currentIteration) {
         const { current, completed, error } = currentIteration.highlighting;
