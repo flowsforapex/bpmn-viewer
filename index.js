@@ -6,6 +6,8 @@ import customPaletteProviderModule from './lib/viewerPalette';
 import callActivityModule from './modules/callActivityModule';
 import drilldownCentering from './modules/drilldownCentering';
 import styleModule from './modules/styleModule';
+import multiInstanceModule from './modules/multiInstanceModule';
+import userTaskModule from './modules/userTaskModule/';
 
 var bpmnViewer = {
   Viewer: Viewer,
@@ -14,8 +16,10 @@ var bpmnViewer = {
     ZoomScrollModule,
     drilldownCentering,
     callActivityModule,
+    multiInstanceModule,
     styleModule,
-    customPaletteProviderModule
+    customPaletteProviderModule,
+    userTaskModule
   },
 };
 
