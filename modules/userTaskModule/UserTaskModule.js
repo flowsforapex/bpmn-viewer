@@ -41,10 +41,10 @@ export class UserTaskModule {
     });
 
     // add overlay
-    this._overlays.add(element, 'iterations', {
+    this._overlays.add(element, 'external-link', {
       position: {
-        bottom: -7,
-        right: -8
+        bottom: -2,
+        right: -20
       },
       html: button
     });

@@ -76,10 +76,10 @@ export class CallActivityModule {
     });
 
     // add overlay
-    this._overlays.add(element, 'drilldown', {
+    this._overlays.add(element, 'ca-drilldown', {
       position: {
-        bottom: -7,
-        right: -8
+        bottom: -2,
+        right: -20
       },
       html: button
     });

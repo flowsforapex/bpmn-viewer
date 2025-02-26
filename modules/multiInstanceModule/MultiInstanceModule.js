@@ -125,8 +125,8 @@ export class MultiInstanceModule {
     // add overlay
     this._overlays.add(element, 'iterations', {
       position: {
-        bottom: -7,
-        right: -8
+        bottom: -2,
+        right: -20
       },
       html: button
     });

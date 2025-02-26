@@ -7,9 +7,9 @@ import ZoomScrollModule from 'diagram-js/lib/navigation/zoomscroll';
 
 import customPaletteProviderModule from './lib/viewerPalette';
 import callActivityModule from './modules/callActivityModule';
-import drilldownCentering from './modules/drilldownCentering';
 import multiInstanceModule from './modules/multiInstanceModule';
 import styleModule from './modules/styleModule';
+import subProcessTweaks from './modules/subProcessTweaks';
 import userTaskModule from './modules/userTaskModule/';
 
 import bpmnCSS from 'bpmn-js/dist/assets/bpmn-js.css';
@@ -97,7 +97,7 @@ class Viewer extends HTMLElement {
       additionalModules: [
         ...(this.showToolbar || this.enableMousewheelZoom) ? [MoveCanvasModule] : [],
         ...(this.enableMousewheelZoom) ? [ZoomScrollModule] : [],
-        drilldownCentering,
+        subProcessTweaks,
         ...(this.enableCallActivities) ? [callActivityModule] : [],
         multiInstanceModule,
         ...(this.addHighlighting || this.useBPMNcolors) ? [styleModule] : [],
@@ -219,6 +219,7 @@ class Viewer extends HTMLElement {
     const eventBus = this.viewer.get('eventBus');
     const multiInstanceModule = this.viewer.get('multiInstanceModule');
     const userTaskModule = this.viewer.get('userTaskModule');
+    const subProcessTweaks = this.viewer.get('subProcessTweaks');
 
     // update colors with the current highlighting info
     this.updateColors(this.current, this.completed, this.error);
@@ -226,6 +227,8 @@ class Viewer extends HTMLElement {
     // root.set -> drilled down into or moved out from sub process
     eventBus.on('root.set', (event) => {
       const {element} = event;
+      // set zoom to center
+      subProcessTweaks.centerAfterDrilldown();
       // if current element is not iterating -> iterating elements are handled inside module
       if (!multiInstanceModule.constructor.isMultiInstanceSubProcess(element)) {
         // update colors
@@ -242,6 +245,8 @@ class Viewer extends HTMLElement {
     if (this.userTaskData) {
       userTaskModule.addOverlays();
     }
+
+    subProcessTweaks.alignDrilldownButtons();
   }
 
   updateColors(current, completed, error) {
