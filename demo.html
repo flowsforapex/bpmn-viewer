@@ -132,7 +132,35 @@
 
           viewerElement.userTaskData = {
             "Activity_C3": "https://github.com/mt-ag/bpmn-viewer",
-        };
+          };
+
+          viewerElement.badgeData = {
+            "Activity_C1": [
+              {
+                "position": "TopLeft",
+                "shape": "default",
+                "label": "100",
+                "textColor": "#FF0000",
+                "borderColor": "#FF0000"
+              },
+              {
+                "position": "TopRight",
+                "shape": "circle",
+                "label": "50",
+                "textColor": "#000000",
+                "backgroundColor": "#00FF00"
+              },
+              {
+                "position": "BottomLeft",
+                "shape": "square",
+                "label": "Test",
+                "icon": "fa-home",
+                "textColor": "#FFFFFF",
+                "iconColor": "#00FF00",
+                "borderColor": "#FFFFFF"
+              },
+            ],
+          }
         })
       })
       .catch(error => {

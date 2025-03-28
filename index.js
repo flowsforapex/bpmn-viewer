@@ -6,6 +6,7 @@ import MoveCanvasModule from 'diagram-js/lib/navigation/movecanvas';
 import ZoomScrollModule from 'diagram-js/lib/navigation/zoomscroll';
 
 import customPaletteProviderModule from './lib/viewerPalette';
+import badgeModule from './modules/badgeModule';
 import callActivityModule from './modules/callActivityModule';
 import multiInstanceModule from './modules/multiInstanceModule';
 import styleModule from './modules/styleModule';
@@ -102,7 +103,8 @@ class Viewer extends HTMLElement {
         multiInstanceModule,
         ...(this.addHighlighting || this.useBPMNcolors) ? [styleModule] : [],
         ...(this.showToolbar) ? [customPaletteProviderModule] : [],
-        userTaskModule
+        userTaskModule,
+        badgeModule
       ],
       bpmnRenderer: {
         defaultFillColor: 'var(--default-fill-color)',
@@ -220,6 +222,7 @@ class Viewer extends HTMLElement {
     const multiInstanceModule = this.viewer.get('multiInstanceModule');
     const userTaskModule = this.viewer.get('userTaskModule');
     const subProcessTweaks = this.viewer.get('subProcessTweaks');
+    const badgeModule = this.viewer.get('badgeModule');
 
     // update colors with the current highlighting info
     this.updateColors(this.current, this.completed, this.error);
@@ -244,6 +247,11 @@ class Viewer extends HTMLElement {
     // add overlays if userTaskData is existing
     if (this.userTaskData) {
       userTaskModule.addOverlays();
+    }
+    
+    // add overlays if badgeData is existing
+    if (this.badgeData) {
+      badgeModule.addOverlays();
     }
 
     subProcessTweaks.alignDrilldownButtons();

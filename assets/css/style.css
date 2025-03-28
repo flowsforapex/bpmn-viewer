@@ -261,3 +261,9 @@
   border-radius: 2px;
   padding: 1px;
 }
+
+.element-badge {
+  font-family: sans-serif;
+  white-space: nowrap;
+  padding: 0.25em;
+}
