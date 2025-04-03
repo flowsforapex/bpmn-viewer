@@ -15,7 +15,7 @@ export class BadgeModule {
 
   addOverlays() {
 
-    const { badgeData } = this._component;
+    const { badgeData } = this._component.diagram;
 
     this._elementRegistry.filter(element => badgeData && badgeData[element.id])
     .forEach((element) => {

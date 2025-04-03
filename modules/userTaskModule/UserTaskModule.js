@@ -16,7 +16,7 @@ export class UserTaskModule {
 
   addOverlays() {
 
-    const { userTaskData } = this._component;
+    const { userTaskData } = this._component.diagram;
 
     this._elementRegistry.filter((element) => {
       const bo = getBusinessObject(element);
