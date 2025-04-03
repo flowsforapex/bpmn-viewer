@@ -43,25 +43,19 @@ export class CallActivityModule {
       const objectId = element.id;
 
       // retrieve hieracry + current diagram
-      const { data, diagramIdentifier } = this._component;
+      const { data, diagram } = this._component;
 
       // get new diagram from hierarchy
       const newDiagram = data.find(
-        d => d.callingDiagramIdentifier === diagramIdentifier &&
-          d.callingObjectId === objectId
+        d => d.callActivityData.callingDiagramIdentifier === diagram.diagramIdentifier &&
+          d.callActivityData.callingObjectId === objectId
       );
 
       // if insight allowed
-      if (newDiagram && newDiagram.insight === 1) {
+      if (newDiagram && newDiagram.callActivityData.insight === 1) {
 
         // set new diagram properties
-        this._component.diagramIdentifier = newDiagram.diagramIdentifier;
-        this._component.callingDiagramIdentifier = newDiagram.callingDiagramIdentifier;
-        this._component.callingObjectId = newDiagram.callingObjectId;
-
-        this._component.current = newDiagram.current;
-        this._component.completed = newDiagram.completed;
-        this._component.error = newDiagram.error;
+        this._component.diagram = newDiagram;
 
         // update breadcrumb
         this.updateBreadcrumb();
@@ -71,7 +65,7 @@ export class CallActivityModule {
         subProcessBreadcrumb.style.top = '60px';
 
         // invoke loadDiagram of component
-        this._component.loadDiagram(newDiagram.diagram);
+        this._component.loadDiagram();
       }
     });
 
@@ -96,14 +90,11 @@ export class CallActivityModule {
   updateBreadcrumb() {
 
     // retrieve hierarchy
-    const { data, diagramIdentifier, callingDiagramIdentifier, callingObjectId } = this._component;
+    const { diagram } = this._component;
 
     // retrieve properties of current diagram
-    const { breadcrumb } = data.find(
-      d => d.diagramIdentifier === diagramIdentifier &&
-        d.callingDiagramIdentifier === callingDiagramIdentifier &&
-        d.callingObjectId === callingObjectId
-    );
+    const { diagramIdentifier } = diagram;
+    const { breadcrumb, callingDiagramIdentifier, callingObjectId } = diagram.callActivityData;
 
     // breadcrumb list entry
     const link = domify(
@@ -136,16 +127,10 @@ export class CallActivityModule {
         this.trimBreadcrumbTo(index);
 
         // set new diagram properties
-        this._component.diagramIdentifier = newDiagram.diagramIdentifier;
-        this._component.callingDiagramIdentifier = newDiagram.callingDiagramIdentifier;
-        this._component.callingObjectId = newDiagram.callingObjectId;
-
-        this._component.current = newDiagram.current;
-        this._component.completed = newDiagram.completed;
-        this._component.error = newDiagram.error;
+        this._component.diagram = newDiagram;
 
         // invoke loadDiagram of component
-        this._component.loadDiagram(newDiagram.diagram);
+        this._component.loadDiagram();
       }
     });
 

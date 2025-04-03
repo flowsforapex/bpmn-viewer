@@ -28,8 +28,6 @@ class Viewer extends HTMLElement {
     this.themePluginClass = this.getAttribute('themePluginClass');
 
     this.showToolbar = (this.getAttribute('showToolbar') === 'true');
-    this.addHighlighting = (this.getAttribute('addHighlighting') === 'true');
-    this.enableCallActivities = (this.getAttribute('enableCallActivities') === 'true');
     this.enableMousewheelZoom = (this.getAttribute('enableMousewheelZoom') === 'true');
     this.useBPMNcolors = (this.getAttribute('useBPMNcolors') === 'true');
 
@@ -99,9 +97,9 @@ class Viewer extends HTMLElement {
         ...(this.showToolbar || this.enableMousewheelZoom) ? [MoveCanvasModule] : [],
         ...(this.enableMousewheelZoom) ? [ZoomScrollModule] : [],
         subProcessTweaks,
-        ...(this.enableCallActivities) ? [callActivityModule] : [],
+        callActivityModule,
         multiInstanceModule,
-        ...(this.addHighlighting || this.useBPMNcolors) ? [styleModule] : [],
+        styleModule,
         ...(this.showToolbar) ? [customPaletteProviderModule] : [],
         userTaskModule,
         badgeModule
@@ -150,24 +148,21 @@ class Viewer extends HTMLElement {
 
   loadData(data) {
 
-    let diagram;
     let oldLoaded = true;
 
-    // if call activities option enabled
-    if (this.enableCallActivities) {
+    if (this.diagramIdentifier) {
       // load old diagram (if possible)
-      diagram = data.find(d => d.diagramIdentifier === this.diagramIdentifier);
+      this.diagram = data.find(d => d.diagramIdentifier === this.diagramIdentifier);
+    } else {
       // otherwise: get root entry
-      if (!diagram) {
-        oldLoaded = false;
-        diagram = data.find(d => typeof d.callingDiagramIdentifier === 'undefined');
-      } 
-      // set references to hierarchy + current diagram
-      this.data = data;
-      this.diagramIdentifier = diagram.diagramIdentifier;
-      this.callingDiagramIdentifier = diagram.callingDiagramIdentifier;
-      this.callingObjectId = diagram.callingObjectId;
+      oldLoaded = false;
+      this.diagram = data.find(d => !d.callActivityData || d.callActivityData.callingDiagramIdentifier === null);
+    }
 
+    if (this.diagram && this.diagram.callActivityData) {
+      // set references to hierarchy
+      this.data = data;
+      
       const callActivityModule = this.viewer.get('callActivityModule');
 
       // reset & update breadcrumb
@@ -175,40 +170,33 @@ class Viewer extends HTMLElement {
         callActivityModule.resetBreadcrumb();
         callActivityModule.updateBreadcrumb();
       }
-    // call activities not activated
-    } else {
-      // get first (only) entry
-      [diagram] = data;
-      this.diagramIdentifier = diagram.diagramIdentifier;
     }
 
-    // add highlighting if option is enabled
-    if (this.addHighlighting) {
-      this.current = diagram.current;
-      this.completed = diagram.completed;
-      this.error = diagram.error;
-    }
+    // // add highlighting if option is enabled
+    // if (this.addHighlighting) {
+    //   this.current = this.diagram.current;
+    //   this.completed = this.diagram.completed;
+    //   this.error = this.diagram.error;
+    // }
 
-    // parse iterationData and attach to instance
-    try {
-      this.iterationData = JSON.parse(diagram.iterationData);
-    } catch (e) {
-      this.iterationData = null;
-    }
+    // // parse iterationData and attach to instance
+    // try {
+    //   this.iterationData = JSON.parse(this.diagram.iterationData);
+    // } catch (e) {
+    //   this.iterationData = null;
+    // }
     
-    // parse userTaskData and attach to instance
-    try {
-      this.userTaskData = JSON.parse(diagram.userTaskData);
-    } catch (e) {
-      this.userTaskData = null;
-    }
-
-    return diagram.diagram;
+    // // parse userTaskData and attach to instance
+    // try {
+    //   this.userTaskData = JSON.parse(this.diagram.userTaskData);
+    // } catch (e) {
+    //   this.userTaskData = null;
+    // }
   }
 
-  async loadDiagram(diagramContent) {
+  async loadDiagram() {
     
-    const result = await this.viewer.importXML(diagramContent);
+    const result = await this.viewer.importXML(this.diagram.xml);
     const { warnings } = result;
       
     if (warnings.length > 0) {
@@ -225,7 +213,7 @@ class Viewer extends HTMLElement {
     const badgeModule = this.viewer.get('badgeModule');
 
     // update colors with the current highlighting info
-    this.updateColors(this.current, this.completed, this.error);
+    this.updateColors();
       
     // root.set -> drilled down into or moved out from sub process
     eventBus.on('root.set', (event) => {
@@ -235,22 +223,22 @@ class Viewer extends HTMLElement {
       // if current element is not iterating -> iterating elements are handled inside module
       if (!multiInstanceModule.constructor.isMultiInstanceSubProcess(element)) {
         // update colors
-        this.updateColors(this.current, this.completed, this.error);
+        this.updateColors();
       }
     });
 
     // add overlays if iterationData is existing
-    if (this.iterationData) {
+    if (this.diagram.iterationData) {
       multiInstanceModule.addOverlays();
     }
 
     // add overlays if userTaskData is existing
-    if (this.userTaskData) {
+    if (this.diagram.userTaskData) {
       userTaskModule.addOverlays();
     }
     
     // add overlays if badgeData is existing
-    if (this.badgeData) {
+    if (this.diagram.badgeData) {
       badgeModule.addOverlays();
     }
 
@@ -259,21 +247,25 @@ class Viewer extends HTMLElement {
 
   updateColors(current, completed, error) {
     // if any color option is enabled
-    if (this.addHighlighting || this.useBPMNcolors) {
+    if (this.diagram.highlightingData || this.useBPMNcolors) {
       // get viewer module
       const styleModule = this.viewer.get('styleModule');
       // reset current colors
       this.resetColors();
       // add highlighting if option is enabled
-      if (this.addHighlighting) {
-        styleModule.highlightElements(current, completed, error);
+      if (this.diagram.highlightingData) {
+        styleModule.highlightElements(
+          current || this.diagram.highlightingData.current,
+          completed || this.diagram.highlightingData.completed,
+          error || this.diagram.highlightingData.error
+        );
       }
     }
   }
   
   resetColors() {
     // if any color option is enabled
-    if (this.addHighlighting || this.useBPMNcolors) {
+    if (this.diagram.highlightingData || this.useBPMNcolors) {
       // get viewer module
       const styleModule = this.viewer.get('styleModule');
       // reset bpmn colors if option is not enabled

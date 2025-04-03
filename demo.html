@@ -19,8 +19,6 @@
   <f4a-viewer
     regionId="viewer"
     showToolbar="true"
-    addHighlighting="true"
-    enableCallActivities="true"
     enableMousewheelZoom="true"
     useBPMNcolors=false
     themePluginClass="FLOWS-DARK" ></f4a-viewer>
@@ -32,14 +30,19 @@
         data.text()
         .then(result => {
           const viewerElement = document.querySelector('f4a-viewer');
-          viewerElement.loadDiagram(result);
+          viewerElement.diagram = {
+            xml: result
+          };
+          viewerElement.loadDiagram();
 
           /* DEMO DATA - must be attached to element */
-          viewerElement.current = ["Activity_A2"];
-          viewerElement.completed = ["Event_Start","Activity_PreSplit","Activity_A1"];
-          viewerElement.error = [];
+          viewerElement.diagram.highlightingData = {
+            current: ["Activity_A2"],
+            completed: ["Event_Start","Activity_PreSplit","Activity_A1"],
+            error: []
+          };
 
-          viewerElement.iterationData = {
+          viewerElement.diagram.iterationData = {
             "Activity_A2": [
               {
                   "stepKey": "HzWFmaqGWC",
@@ -130,11 +133,11 @@
             ]
           };
 
-          viewerElement.userTaskData = {
+          viewerElement.diagram.userTaskData = {
             "Activity_C3": "https://github.com/mt-ag/bpmn-viewer",
           };
 
-          viewerElement.badgeData = {
+          viewerElement.diagram.badgeData = {
             "Activity_C1": [
               {
                 "position": "TopLeft",

@@ -94,12 +94,20 @@ export class MultiInstanceModule {
     // get parent iteration from breadcrumb
     const parentIteration = this.breadcrumbSelection[this.getLastBreadcrumbIndex() - 1];
 
-    // retrieve data from component by using id and stepKey
-    return (this._component.iterationData &&
-      this._component.iterationData[id] &&
-      this._component.iterationData[id].filter(
-        i => ((!parentIteration && !i.parentStepKey) || (parentIteration && i.parentStepKey === parentIteration.stepKey))
-      )) || [];
+    const { iterationData } = this._component.diagram;
+
+    if (iterationData) {
+      const entry = this._component.diagram.iterationData[id];
+
+      if (entry) {
+        // retrieve data from component by using id and stepKey
+        return this._component.diagram.iterationData[id].filter(
+          i => ((!parentIteration && !i.parentStepKey) || (parentIteration && i.parentStepKey === parentIteration.stepKey))
+        );
+      }
+    }
+    
+    return [];
   }
 
   /* Overlays */
@@ -306,16 +314,13 @@ export class MultiInstanceModule {
   
   updateHighlighting() {
 
-    if (this._component) {
+    const currentIteration = this.breadcrumbSelection[this.getLastBreadcrumbIndex()];
 
-      const currentIteration = this.breadcrumbSelection[this.getLastBreadcrumbIndex()];
-
-      if (currentIteration) {
-        const { current, completed, error } = currentIteration.highlighting;
-        this._component.updateColors(current, completed, error);
-      } else {
-        this._component.resetColors();
-      }
+    if (currentIteration) {
+      const { current, completed, error } = currentIteration.highlighting;
+      this._component.updateColors(current, completed, error);
+    } else {
+      this._component.resetColors();
     }
   }
 }
