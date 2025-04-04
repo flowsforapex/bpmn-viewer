@@ -237,8 +237,8 @@ class Viewer extends HTMLElement {
       userTaskModule.addOverlays();
     }
     
-    // add overlays if badgeData is existing
-    if (this.diagram.badgeData) {
+    // add overlays if badgesData is existing
+    if (this.diagram.badgesData) {
       badgeModule.addOverlays();
     }
 

@@ -15,11 +15,11 @@ export class BadgeModule {
 
   addOverlays() {
 
-    const { badgeData } = this._component.diagram;
+    const { badgesData } = this._component.diagram;
 
-    this._elementRegistry.filter(element => badgeData && badgeData[element.id])
+    this._elementRegistry.filter(element => badgesData && badgesData[element.id])
     .forEach((element) => {
-      this.addOverlay(element, badgeData[element.id]);
+      this.addOverlay(element, badgesData[element.id]);
     });
   }
 
