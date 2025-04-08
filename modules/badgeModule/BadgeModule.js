@@ -31,9 +31,9 @@ export class BadgeModule {
 
         let position;
         
-        if (b.position === 'TopLeft') position = { top: -30, left: 0 };
-        else if (b.position === 'TopRight') position = { top: -30, right: 0 };
-        else if (b.position === 'BottomLeft') position = { bottom: -2, left: 0 };
+        if (b.position === 'TopLeft') position = { top: -12.5, left: 10 };
+        else if (b.position === 'TopRight') position = { top: -12.5, right: 10 };
+        else if (b.position === 'BottomLeft') position = { bottom: 12.5, left: 10 };
         // else if (b.position === 'BottomRight') position = { bottom: -2, right: 0 };
         
         const badge = domify(
@@ -47,14 +47,6 @@ export class BadgeModule {
         if (b.borderColor) badge.style.border = `1px solid ${b.borderColor}`;
         if (b.backgroundColor) badge.style.backgroundColor = b.backgroundColor;
 
-        if (b.shape === 'square') {
-          // nothing to do here
-        } else if (b.shape === 'default') {
-          badge.style.borderRadius = '0.5em';
-        } else if (b.shape === 'circle') {
-          badge.style.borderRadius = '100%';
-        }
-
         const i = this._overlays.add(element, 'iterations', {
             position: position,
             html: badge,
@@ -66,13 +58,11 @@ export class BadgeModule {
           const {offsetWidth} = badge;
           const overlay = this._overlays.get(i);
 
-          // TODO align position depending on shape?
-
           if (b.position === 'TopLeft') {
-            if (b.icon) overlay.position = { top: overlay.position.top, left: overlay.position.left - offsetWidth - 5 };
+            if (b.icon) overlay.position = { top: overlay.position.top, left: overlay.position.left - offsetWidth };
             else overlay.position = { top: overlay.position.top, left: overlay.position.left - offsetWidth };
           } else if (b.position === 'BottomLeft') {
-            if (b.icon) overlay.position = { bottom: overlay.position.bottom, left: overlay.position.left - offsetWidth - 5 };
+            if (b.icon) overlay.position = { bottom: overlay.position.bottom, left: overlay.position.left - offsetWidth };
             else overlay.position = { bottom: overlay.position.bottom, left: overlay.position.left - offsetWidth };
           }
 

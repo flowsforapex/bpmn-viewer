@@ -264,6 +264,12 @@
 
 .element-badge {
   font-family: sans-serif;
+  font-size: 1em;
+  text-align: center;
   white-space: nowrap;
   padding: 0.25em;
+  border-radius: 0.25em;
+
+  color: var(--default-stroke-color);
+  background-color: var(--default-fill-color);
 }
