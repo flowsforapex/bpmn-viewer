@@ -171,27 +171,6 @@ class Viewer extends HTMLElement {
         callActivityModule.updateBreadcrumb();
       }
     }
-
-    // // add highlighting if option is enabled
-    // if (this.addHighlighting) {
-    //   this.current = this.diagram.current;
-    //   this.completed = this.diagram.completed;
-    //   this.error = this.diagram.error;
-    // }
-
-    // // parse iterationData and attach to instance
-    // try {
-    //   this.iterationData = JSON.parse(this.diagram.iterationData);
-    // } catch (e) {
-    //   this.iterationData = null;
-    // }
-    
-    // // parse userTaskData and attach to instance
-    // try {
-    //   this.userTaskData = JSON.parse(this.diagram.userTaskData);
-    // } catch (e) {
-    //   this.userTaskData = null;
-    // }
   }
 
   async loadDiagram() {
@@ -200,13 +179,14 @@ class Viewer extends HTMLElement {
     const { warnings } = result;
       
     if (warnings.length > 0) {
-      apex.debug.warn('Warnings during XML Import', warnings); // TODO emit event
+      apex.debug.warn('Warnings during XML Import', warnings);
     }
       
     this.zoom('fit-viewport');
       
     // get viewer modules
     const eventBus = this.viewer.get('eventBus');
+    const callActivityModule = this.viewer.get('callActivityModule');
     const multiInstanceModule = this.viewer.get('multiInstanceModule');
     const userTaskModule = this.viewer.get('userTaskModule');
     const subProcessTweaks = this.viewer.get('subProcessTweaks');
@@ -227,6 +207,11 @@ class Viewer extends HTMLElement {
       }
     });
 
+    // add overlays if callActivityData is existing
+    if (this.diagram.callActivityData) {
+      callActivityModule.addOverlays();
+    }
+    
     // add overlays if iterationData is existing
     if (this.diagram.iterationData) {
       multiInstanceModule.addOverlays();
@@ -245,7 +230,15 @@ class Viewer extends HTMLElement {
     subProcessTweaks.alignDrilldownButtons();
   }
 
-  updateColors(current, completed, error) {
+  /*
+   * Parameters used inside MultiInstanceModule
+   * Utilizes diagram highlighting data by default
+   */
+  updateColors(
+    current = this.diagram.highlightingData.current,
+    completed = this.diagram.highlightingData.completed,
+    error = this.diagram.highlightingData.error
+  ) {
     // if any color option is enabled
     if (this.diagram.highlightingData || this.useBPMNcolors) {
       // get viewer module
@@ -254,11 +247,7 @@ class Viewer extends HTMLElement {
       this.resetColors();
       // add highlighting if option is enabled
       if (this.diagram.highlightingData) {
-        styleModule.highlightElements(
-          current || this.diagram.highlightingData.current,
-          completed || this.diagram.highlightingData.completed,
-          error || this.diagram.highlightingData.error
-        );
+        styleModule.highlightElements(current, completed, error);
       }
     }
   }

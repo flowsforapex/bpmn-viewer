@@ -18,13 +18,14 @@ export class CallActivityModule {
     this._breadcrumb = domify('<ul class="bjs-breadcrumbs" id="callActivityBreadcrumb"></ul>');
     this._container = this._canvas.getContainer();
     this._container.appendChild(this._breadcrumb);
+  }
 
-    // add overlay for drilldown-able elements
-    this._eventBus.on('import.render.complete', () => {
-      this._elementRegistry
-        .filter(e => is(e, 'bpmn:CallActivity'))
-        .forEach(e => this.addOverlay(e));
-    });
+  /* Overlays */
+  
+  addOverlays() {
+    this._elementRegistry
+    .filter(e => is(e, 'bpmn:CallActivity'))
+    .forEach(e => this.addOverlay(e));
   }
 
   addOverlay(element) {
