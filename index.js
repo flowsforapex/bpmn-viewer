@@ -235,9 +235,9 @@ class Viewer extends HTMLElement {
    * Utilizes diagram highlighting data by default
    */
   updateColors(
-    current = this.diagram.highlightingData.current,
-    completed = this.diagram.highlightingData.completed,
-    error = this.diagram.highlightingData.error
+    current = this.diagram.highlightingData?.current,
+    completed = this.diagram.highlightingData?.completed,
+    error = this.diagram.highlightingData?.error
   ) {
     // if any color option is enabled
     if (this.diagram.highlightingData || this.useBPMNcolors) {
