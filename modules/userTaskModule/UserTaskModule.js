@@ -1,20 +1,22 @@
 
 import { getBusinessObject, is } from 'bpmn-js/lib/util/ModelUtil';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { domify } from 'min-dom';
 
 export class UserTaskModule {
 
-  constructor(canvas, eventBus, elementRegistry, translate, overlays) {
+  constructor(canvas, eventBus, elementRegistry, translate, overlays, component) {
     this._canvas = canvas;
     this._eventBus = eventBus;
     this._elementRegistry = elementRegistry;
     this._translate = translate;
     this._overlays = overlays;
+    this._component = component;
   }
 
   addOverlays() {
 
-    const { userTaskData } = this._widget;
+    const { userTaskData } = this._component.diagram;
 
     this._elementRegistry.filter((element) => {
       const bo = getBusinessObject(element);
@@ -39,18 +41,21 @@ export class UserTaskModule {
     });
 
     // add overlay
-    this._overlays.add(element, 'iterations', {
+    this._overlays.add(element, 'external-link', {
       position: {
-        bottom: -7,
-        right: -8
+        bottom: -2,
+        right: -20
       },
       html: button
     });
   }
-
-  setWidget(widget) {
-    this._widget = widget;
-  }
 }
 
-UserTaskModule.$inject = ['canvas', 'eventBus', 'elementRegistry', 'translate', 'overlays'];
+UserTaskModule.$inject = [
+  'canvas',
+  'eventBus',
+  'elementRegistry',
+  'translate',
+  'overlays',
+  'config.component'
+];

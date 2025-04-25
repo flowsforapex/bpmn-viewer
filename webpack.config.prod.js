@@ -12,4 +12,19 @@ module.exports = {
     libraryTarget: "var",
     libraryExport: "default",
   },
+  module: {
+    rules: [
+      {
+        test: /\.css$/,
+        use: ["css-loader"],
+      },
+      {
+        test: /\.ttf$/,
+        use: ["file-loader"],
+      },
+    ],
+  },
+  optimization: {
+    minimize: true,
+  },
 };

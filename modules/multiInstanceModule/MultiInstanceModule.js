@@ -1,16 +1,18 @@
 
 import { getBusinessObject, is } from 'bpmn-js/lib/util/ModelUtil';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { domify, query as domQuery } from 'min-dom';
 
 
 export class MultiInstanceModule {
   
-  constructor(canvas, eventBus, elementRegistry, translate, overlays) {
+  constructor(canvas, eventBus, elementRegistry, translate, overlays, component) {
     this._canvas = canvas;
     this._eventBus = eventBus;
     this._elementRegistry = elementRegistry;
-    this._translate = translate;
+    this._translate = translate; // TODO not translated?
     this._overlays = overlays;
+    this._component = component;
 
     this.breadcrumbIteration = [];
     this.breadcrumbSelection = [];
@@ -41,24 +43,27 @@ export class MultiInstanceModule {
       </div>
     `);
 
-    // append content
-    canvas.getContainer().appendChild(modal);
+    // get canvas container
+    this._container = this._canvas.getContainer();
 
-    eventBus.on('import.render.complete', () => {
+    // append content
+    this._container.appendChild(modal);
+
+    this._eventBus.on('import.render.complete', () => {
       // add search listener for filtering
-      const searchbar = domQuery('#iteration-search input');
+      const searchbar = domQuery('#iteration-search input', this._container);
       searchbar.addEventListener('keyup', (event) => {
         this.filterIterations(event);
       });
       // add close listener
-      const closeButton = domQuery('#iteration-title button.fa-times');
+      const closeButton = domQuery('#iteration-title button.fa-times', this._container);
       closeButton.addEventListener('click', (event) => {
         this.closeIterations();
       });
     });
 
     // when diagram root changes
-    eventBus.on('root.set', (event) => {
+    this._eventBus.on('root.set', (event) => {
       const { element } = event;
 
       // reset breadcrumb data (null all entries above the current)
@@ -80,12 +85,6 @@ export class MultiInstanceModule {
     });
   }
 
-  /* Initialisation */
-
-  setWidget(widget) {
-    this._widget = widget;
-  }
-
   /* Helper */
 
   getIterationData(element) {
@@ -95,12 +94,20 @@ export class MultiInstanceModule {
     // get parent iteration from breadcrumb
     const parentIteration = this.breadcrumbSelection[this.getLastBreadcrumbIndex() - 1];
 
-    // retrieve data from widget by using id and stepKey
-    return (this._widget.iterationData &&
-      this._widget.iterationData[id] &&
-      this._widget.iterationData[id].filter(
-        i => ((!parentIteration && !i.parentStepKey) || (parentIteration && i.parentStepKey == parentIteration.stepKey))
-      )) || [];
+    const { iterationData } = this._component.diagram;
+
+    if (iterationData) {
+      const entry = this._component.diagram.iterationData[id];
+
+      if (entry) {
+        // retrieve data from component by using id and stepKey
+        return this._component.diagram.iterationData[id].filter(
+          i => ((!parentIteration && !i.parentStepKey) || (parentIteration && i.parentStepKey === parentIteration.stepKey))
+        );
+      }
+    }
+    
+    return [];
   }
 
   /* Overlays */
@@ -126,8 +133,8 @@ export class MultiInstanceModule {
     // add overlay
     this._overlays.add(element, 'iterations', {
       position: {
-        bottom: -7,
-        right: -8
+        bottom: -2,
+        right: -20
       },
       html: button
     });
@@ -135,7 +142,7 @@ export class MultiInstanceModule {
 
   /* Boolean functions */
 
-  isMultiInstanceSubProcess(element) {
+  static isMultiInstanceSubProcess(element) {
     const businessObject = getBusinessObject(element);
     return is(element, 'bpmn:SubProcess') && businessObject.loopCharacteristics;
   }
@@ -147,7 +154,7 @@ export class MultiInstanceModule {
   /* Breadcrumb */
 
   getBreadcrumbElements() {
-    const breadcrumb = domQuery('.bjs-breadcrumbs'); // TODO fix selector for excluding call activity breadcrumb
+    const breadcrumb = domQuery('.bjs-breadcrumbs', this._container); // TODO fix selector for excluding call activity breadcrumb
     return [...breadcrumb.children];
   }
 
@@ -221,8 +228,8 @@ export class MultiInstanceModule {
 
   openDialog() {
 
-    const searchbar = domQuery('#iteration-search input');
-    const modal = domQuery('#modal');
+    const searchbar = domQuery('#iteration-search input', this._container);
+    const modal = domQuery('#modal', this._container);
 
     // clear searchbar
     searchbar.value = '';
@@ -232,7 +239,7 @@ export class MultiInstanceModule {
 
   loadTable(data) {
 
-    const tbody = domQuery('#iteration-list tbody');
+    const tbody = domQuery('#iteration-list tbody', this._container);
 
     // build table body
     tbody.replaceChildren(
@@ -268,7 +275,7 @@ export class MultiInstanceModule {
       this.loadTable();
 
       // set title
-      const title = domQuery('#iteration-title span');
+      const title = domQuery('#iteration-title span', this._container);
       title.textContent = getBusinessObject(element).name;
 
       this.openDialog();
@@ -277,14 +284,14 @@ export class MultiInstanceModule {
 
   closeIterations() {
 
-    const modal = domQuery('#modal');
+    const modal = domQuery('#modal', this._container);
 
     modal.style.display = 'none';
   }
 
   loadIteration(loopCounter) {
 
-    const selectedIteration = this.dialogData.find(v => v.loopCounter == loopCounter);
+    const selectedIteration = this.dialogData.find(v => Number(v.loopCounter) === Number(loopCounter));
 
     this.breadcrumbSelection[this.getLastBreadcrumbIndex()] = selectedIteration;
 
@@ -307,18 +314,22 @@ export class MultiInstanceModule {
   
   updateHighlighting() {
 
-    if (this._widget) {
+    const currentIteration = this.breadcrumbSelection[this.getLastBreadcrumbIndex()];
 
-      const currentIteration = this.breadcrumbSelection[this.getLastBreadcrumbIndex()];
-
-      if (currentIteration) {
-        const { current, completed, error } = currentIteration.highlighting;
-        this._widget.updateColors(current, completed, error);
-      } else {
-        this._widget.resetColors();
-      }
+    if (currentIteration) {
+      const { current, completed, error } = currentIteration.highlighting;
+      this._component.updateColors(current, completed, error);
+    } else {
+      this._component.resetColors();
     }
   }
 }
 
-MultiInstanceModule.$inject = ['canvas', 'eventBus', 'elementRegistry', 'translate', 'overlays'];
+MultiInstanceModule.$inject = [
+  'canvas',
+  'eventBus',
+  'elementRegistry',
+  'translate',
+  'overlays',
+  'config.component'
+];
